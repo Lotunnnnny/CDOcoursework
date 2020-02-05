@@ -1,0 +1,149 @@
+Entity:
+CDO 4 56
+null  * 
+ps0 double 3 false false false
+
+
+
+Operation:
+P
+CDO
+double
+k int m int 
+ query
+true
+result = StatFunc.comb(sectors[k].n,m) * ( sectors[k].nocontagion(m) + Integer.Sum(1,m - 1,i, sectors[k].contagion(i,m)) )
+
+
+Operation:
+PCond
+CDO
+double
+k int m int 
+ query
+true
+( m >= 1 => result = P(k,m) / ( 1 - ( ( 1 - sectors[k].p )->pow(sectors[k].n) ) ) ) & ( m < 1 => result = 0 )
+
+
+Operation:
+maxfails
+CDO
+int
+k int s int 
+ query
+true
+( sectors[k].n <= ( s / sectors[k].L ) => result = sectors[k].n ) & ( sectors[k].n > ( s / sectors[k].L ) => result = s / sectors[k].L )
+
+
+
+
+Operation:
+PS
+CDO
+double
+s int 
+ query cached
+true
+( s < 0 => result = 0 ) & ( s = 0 => result = ps0 ) & ( s > 0 => result = Integer.Sum(1,sectors.size,k,VS(k,s)) / s )
+
+
+
+
+Operation:
+VS
+CDO
+double
+k int s int 
+ query
+true
+result = Integer.Sum(1,maxfails(k,s),mk,( sectors[k].mu * mk * sectors[k].L * PCond(k,mk) * PS(s - mk * sectors[k].L) ))
+
+
+Entity:
+Sector 349 49
+null  * 
+name String 3 false false false n int 3 false false false p double 3 false false false q double 3 false false false L int 3 false false false mu double 3 false false false
+
+
+
+
+Operation:
+nocontagion
+Sector
+double
+m int 
+ query cached
+true
+result = ( ( 1 - p )->pow(n - m) ) * ( p->pow(m) ) * ( ( 1 - q )->pow(m * ( n - m )) )
+
+
+
+Operation:
+contagion
+Sector
+double
+i int m int 
+ query
+true
+result = ( ( 1 - p )->pow(n - i) ) * ( p->pow(i) ) * ( ( 1 - q )->pow(i * ( n - m )) ) * ( ( 1 - ( ( 1 - q )->pow(i) ) )->pow(m - i) ) * StatFunc.comb(m,i)
+
+
+
+
+
+Entity:
+StatFunc 330 197
+null  * 
+
+
+Operation:
+comb
+StatFunc
+int
+n int m int 
+ query static cached
+n >= m & m >= 0
+( n - m < m => result = Integer.Prd(m + 1,n,i,i) / Integer.Prd(1,n - m,j,j) ) & ( n - m >= m => result = Integer.Prd(n - m + 1,n,i,i) / Integer.Prd(1,m,j,j) )
+
+
+Association:
+CDO Sector 1 197 120 356 54 0 sectors null 
+ordered 
+
+
+
+
+
+GeneralUseCase:
+test 
+
+
+
+
+Constraint:
+s : sectors
+true
+s.mu = 1 - ( ( 1 - s.p )->pow(s.n) )
+CDO test
+false
+
+
+
+Constraint:
+null
+true
+ps0 = -sectors.mu.sum->exp()
+CDO test
+false
+
+
+
+Constraint:
+null
+true
+Integer.subrange(0,20)->forAll( s | PS(s)->display() )
+CDO test
+false
+
+
+

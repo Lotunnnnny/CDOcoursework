@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<My:model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI">
+<cdos xsi:type="My:CDO" ps0="0.3145151317689791"  sectors = " //@sectors.0 //@sectors.1 //@sectors.2 //@sectors.3 //@sectors.4 //@sectors.5 //@sectors.6 //@sectors.7 //@sectors.8 //@sectors.9 //@sectors.10 //@sectors.11 //@sectors.12 //@sectors.13 //@sectors.14 //@sectors.15" />
+<sectors xsi:type="My:Sector" name="Aerospace and Defense"  n="3"  p="0.009"  q="0.05"  L="5"  mu="0.026757729000000063"  />
+<sectors xsi:type="My:Sector" name="Automobile"  n="3"  p="0.018"  q="0.05"  L="3"  mu="0.053033832"  />
+<sectors xsi:type="My:Sector" name="Banking"  n="10"  p="0.001"  q="0.1"  L="10"  mu="0.009955119790251765"  />
+<sectors xsi:type="My:Sector" name="Broadcasting"  n="3"  p="0.018"  q="0.05"  L="2"  mu="0.053033832"  />
+<sectors xsi:type="My:Sector" name="Buildings and real estate"  n="12"  p="0.006"  q="0.05"  L="9"  mu="0.06967088459570281"  />
+<sectors xsi:type="My:Sector" name="Electronics"  n="6"  p="0.008"  q="0.05"  L="2"  mu="0.04705017875634587"  />
+<sectors xsi:type="My:Sector" name="Entertainment"  n="4"  p="0.017"  q="0.05"  L="5"  mu="0.06628556847900002"  />
+<sectors xsi:type="My:Sector" name="Finance"  n="15"  p="0.004"  q="0.1"  L="8"  mu="0.05834877361467661"  />
+<sectors xsi:type="My:Sector" name="Food and tobacco"  n="2"  p="0.01"  q="0.05"  L="4"  mu="0.01990000000000003"  />
+<sectors xsi:type="My:Sector" name="Health care"  n="3"  p="0.009"  q="0.05"  L="7"  mu="0.026757729000000063"  />
+<sectors xsi:type="My:Sector" name="Insurance"  n="6"  p="0.007"  q="0.1"  L="5"  mu="0.041271824085724385"  />
+<sectors xsi:type="My:Sector" name="Mining, metals"  n="4"  p="0.017"  q="0.05"  L="3"  mu="0.06628556847900002"  />
+<sectors xsi:type="My:Sector" name="Oil and gas"  n="2"  p="0.029"  q="0.05"  L="3"  mu="0.05715900000000007"  />
+<sectors xsi:type="My:Sector" name="Printing and publishing"  n="4"  p="0.009"  q="0.05"  L="2"  mu="0.03551690943899999"  />
+<sectors xsi:type="My:Sector" name="Telecommunications"  n="15"  p="0.026"  q="0.05"  L="12"  mu="0.32642749177632135"  />
+<sectors xsi:type="My:Sector" name="Utilities"  n="11"  p="0.02"  q="0.05"  L="6"  mu="0.19926864925020416"  />
+</My:model>

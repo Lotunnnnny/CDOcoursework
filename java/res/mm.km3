@@ -1,0 +1,112 @@
+package app { 
+
+
+  class CDO {
+
+    attribute ps0 : double;
+
+
+    reference sectors[*] ordered : Sector;
+
+
+    operation P(k : int , m : int ) : double
+    pre: true
+    post: result = StatFunc.comb(sectors[k].n,m) * ( sectors[k].nocontagion(m) + Integer.Sum(1,m - 1,i,sectors[k].contagion(i,m)) );
+
+    operation PCond(k : int , m : int ) : double
+    pre: true
+    post: ( m >= 1 => result = P(k,m) / ( 1 - ( ( 1 - sectors[k].p )->pow(sectors[k].n) ) ) ) & ( m < 1 => result = 0 );
+
+    operation maxfails(k : int , s : int ) : int
+    pre: true
+    post: ( sectors[k].n <= ( s / sectors[k].L ) => result = sectors[k].n ) & ( sectors[k].n > ( s / sectors[k].L ) => result = s / sectors[k].L );
+
+    operation PS(s : int ) : double
+    pre: true
+    post: ( s < 0 => result = 0 ) & ( s = 0 => result = ps0 ) & ( s > 0 => result = Integer.Sum(1,sectors.size,k,VS(k,s)) / s );
+
+    operation VS(k : int , s : int ) : double
+    pre: true
+    post: result = Integer.Sum(1,maxfails(k,s),mk,( sectors[k].mu * mk * sectors[k].L * PCond(k,mk) * PS(s - mk * sectors[k].L) ));
+
+  }
+
+
+
+
+  class Sector {
+
+    attribute name : String;
+
+    attribute n : int;
+
+    attribute p : double;
+
+    attribute q : double;
+
+    attribute L : int;
+
+    attribute mu : double;
+
+
+
+    operation nocontagion(m : int ) : double
+    pre: true
+    post: result = ( ( 1 - p )->pow(n - m) ) * ( p->pow(m) ) * ( ( 1 - q )->pow(m * ( n - m )) );
+
+    operation contagion(i : int , m : int ) : double
+    pre: true
+    post: result = ( ( 1 - p )->pow(n - i) ) * ( p->pow(i) ) * ( ( 1 - q )->pow(i * ( n - m )) ) * ( ( 1 - ( ( 1 - q )->pow(i) ) )->pow(m - i) ) * StatFunc.comb(m,i);
+
+  }
+
+
+
+
+  class StatFunc {
+
+
+
+    static operation comb(n : int , m : int ) : int
+    pre: n >= m & m >= 0
+    post: ( n - m < m => result = Integer.Prd(m + 1,n,i,i) / Integer.Prd(1,n - m,j,j) ) & ( n - m >= m => result = Integer.Prd(n - m + 1,n,i,i) / Integer.Prd(1,m,j,j) );
+
+  }
+
+
+
+
+  class Test {
+
+
+
+    operation test() : void
+    pre: true
+    post: null;
+
+  }
+
+
+
+
+
+
+  usecase test {
+
+    CDO::
+      s : sectors => s.mu = 1 - ( ( 1 - s.p )->pow(s.n) )
+
+
+    CDO::
+      true => ps0 = -sectors.mu.sum->exp()
+
+
+    CDO::
+      true => Integer.subrange(0,20)->forAll( s | PS(s)->display() )
+
+
+  }
+
+
+
+}
