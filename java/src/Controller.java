@@ -463,7 +463,7 @@ class StatFunc
     return _res_;
   }
 
-    public static int comb(int n,int m)
+  public static int comb(int n,int m)
   {   int result = 0;
     if (n < m || m < 0) { return result; } 
     Object cached_result = comb_cache.get(n + ", " + m);
@@ -653,6 +653,7 @@ public class Controller implements SystemTypes, ControllerInterface
     } catch (Exception e) { }
   }
 
+  /* Find and return a method named "name" in class named "c" */
   public static Method findMethod(Class c, String name)
   { Method[] mets = c.getMethods(); 
     for (int i = 0; i < mets.length; i++)
@@ -663,22 +664,25 @@ public class Controller implements SystemTypes, ControllerInterface
     return null;
   }
 
-
+  /* Placeholder */
   public void checkCompleteness()
   {   }
 
-
+  /* Save model in a text file */
   public void saveModel(String file)
   { File outfile = new File(file); 
     PrintWriter out; 
     try { out = new PrintWriter(new BufferedWriter(new FileWriter(outfile))); }
-    catch (Exception e) { return; } 
-  for (int _i = 0; _i < cdos.size(); _i++)
-  { CDO cdox_ = (CDO) cdos.get(_i);
-    out.println("cdox_" + _i + " : CDO");
-    out.println("cdox_" + _i + ".ps0 = " + cdox_.getps0());
-  }
+    catch (Exception e) { return; }
 
+    /* Print out ps0 of CDOs*/ //Todo: find out what does ps0 mean
+    for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox_ = (CDO) cdos.get(_i);
+      out.println("cdox_" + _i + " : CDO");
+      out.println("cdox_" + _i + ".ps0 = " + cdox_.getps0());
+    }
+
+  /* Traverse attributes of sectors */
   for (int _i = 0; _i < sectors.size(); _i++)
   { Sector sectorx_ = (Sector) sectors.get(_i);
     out.println("sectorx_" + _i + " : Sector");
@@ -690,11 +694,13 @@ public class Controller implements SystemTypes, ControllerInterface
     out.println("sectorx_" + _i + ".mu = " + sectorx_.getmu());
   }
 
+  /* Printing out statistics data of CDOs */ //Todo: implement this block
   for (int _i = 0; _i < statfuncs.size(); _i++)
   { StatFunc statfuncx_ = (StatFunc) statfuncs.get(_i);
     out.println("statfuncx_" + _i + " : StatFunc");
   }
 
+  /* Traverse CDOs and specify relationship between sectors and CDOs */
   for (int _i = 0; _i < cdos.size(); _i++)
   { CDO cdox_ = (CDO) cdos.get(_i);
     List cdo_sectors_Sector = cdox_.getsectors();
@@ -702,10 +708,11 @@ public class Controller implements SystemTypes, ControllerInterface
     { out.println("sectorx_" + sectors.indexOf(cdo_sectors_Sector.get(_j)) + " : cdox_" + _i + ".sectors");
     }
   }
-    out.close(); 
+
+  out.close();
   }
 
-
+  /* Save model in xsi format */
   public void saveXSI(String file)
   { File outfile = new File(file); 
     PrintWriter out; 
@@ -726,6 +733,7 @@ public class Controller implements SystemTypes, ControllerInterface
     out.println(" />");
   }
 
+    /* Traverse attributes of sectors */
     for (int _i = 0; _i < sectors.size(); _i++)
     { Sector sectorx_ = (Sector) sectors.get(_i);
        out.print("<sectors xsi:type=\"My:Sector\"");
@@ -738,6 +746,7 @@ public class Controller implements SystemTypes, ControllerInterface
     out.println(" />");
   }
 
+    /* Could be printing out statistics data of CDOs */ //Todo: implement this block
     for (int _i = 0; _i < statfuncs.size(); _i++)
     { StatFunc statfuncx_ = (StatFunc) statfuncs.get(_i);
        out.print("<statfuncs xsi:type=\"My:StatFunc\"");
@@ -748,16 +757,16 @@ public class Controller implements SystemTypes, ControllerInterface
     out.close(); 
   }
 
-
-
+  /* Add a new CDO to CDO list */
   public void addCDO(CDO oo) { cdos.add(oo); }
 
+  /* Add a new sector to sector list */
   public void addSector(Sector oo) { sectors.add(oo); }
 
+  /* Add a *(statistical function) to StatFunc list */
   public void addStatFunc(StatFunc oo) { statfuncs.add(oo); }
 
-
-
+  /* Add all CDOs from input to existing CDO list */
   public void createAllCDO(List cdox)
   { for (int i = 0; i < cdox.size(); i++)
     { CDO cdox_x = (CDO) cdox.get(i);
@@ -767,7 +776,7 @@ public class Controller implements SystemTypes, ControllerInterface
     }
   }
 
-
+  /* Initialise a new CDO and add it into existing CDO list */
   public CDO createCDO()
   { 
     CDO cdox = new CDO();
@@ -778,6 +787,7 @@ public class Controller implements SystemTypes, ControllerInterface
     return cdox;
   }
 
+  /* Add all sectors from input to existing sector list */
   public void createAllSector(List sectorx)
   { for (int i = 0; i < sectorx.size(); i++)
     { Sector sectorx_x = (Sector) sectorx.get(i);
@@ -787,7 +797,7 @@ public class Controller implements SystemTypes, ControllerInterface
     }
   }
 
-
+  /* Initialise a new sector and add it into existing sector list */
   public Sector createSector()
   { 
     Sector sectorx = new Sector();
@@ -802,6 +812,7 @@ public class Controller implements SystemTypes, ControllerInterface
     return sectorx;
   }
 
+  /* Add all *(statistical functions) from input to existing statfunc list *///Todo: what is statfunc
   public void createAllStatFunc(List statfuncx)
   { for (int i = 0; i < statfuncx.size(); i++)
     { StatFunc statfuncx_x = (StatFunc) statfuncx.get(i);
@@ -811,7 +822,7 @@ public class Controller implements SystemTypes, ControllerInterface
     }
   }
 
-
+  /* Initialise a new *(statistical functions) and add it into existing statfunc list *///Todo: what is statfunc
   public StatFunc createStatFunc()
   { 
     StatFunc statfuncx = new StatFunc();
@@ -820,12 +831,12 @@ public class Controller implements SystemTypes, ControllerInterface
     return statfuncx;
   }
 
-
-public void setps0(CDO cdox, double ps0_x) 
+  /* Set ps0 of a CDO as specified parameter */
+  public void setps0(CDO cdox, double ps0_x)
   { cdox.setps0(ps0_x);
     }
 
-
+  /* Set sectors of a CDO as specified sector list */
   public void setsectors(CDO cdox, List sectorsxx) 
   {   List _oldsectorsxx = cdox.getsectors();
   for (int _i = 0; _i < sectorsxx.size(); _i++)
@@ -836,61 +847,60 @@ public void setps0(CDO cdox, double ps0_x)
     cdox.setsectors(sectorsxx);
       }
 
-
+  /* Set sectors[_ind] of a CDO as specified sector */
   public void setsectors(CDO cdox, int _ind, Sector sectorx) 
   { cdox.setsectors(_ind,sectorx); }
-  
+
+  /* Add a sector to a CDO */
   public void addsectors(CDO cdox, Sector sectorsxx) 
-  {   CDO.removeAllsectors(cdos,sectorsxx);
+  {   CDO.removeAllsectors(cdos,sectorsxx); //Remove a sector from all CDOs that contain it
     cdox.addsectors(sectorsxx);
     }
 
-
+  /* Remove a sector from existing sector list of a CDO*/
   public void removesectors(CDO cdox, Sector sectorsxx) 
   { cdox.removesectors(sectorsxx);
     }
 
-
- public void unionsectors(CDO cdox,List sectorsx)
+  /* Add a list of sectors to a CDO */
+  public void unionsectors(CDO cdox,List sectorsx)
   { for (int _i = 0; _i < sectorsx.size(); _i++)
     { Sector sectorxsectors = (Sector) sectorsx.get(_i);
       addsectors(cdox,sectorxsectors);
-     } } 
+     } }
 
-
- public void subtractsectors(CDO cdox,List sectorsx)
+  public void subtractsectors(CDO cdox,List sectorsx)
   { for (int _i = 0; _i < sectorsx.size(); _i++)
     { Sector sectorxsectors = (Sector) sectorsx.get(_i);
       removesectors(cdox,sectorxsectors);
      } } 
 
 
-public void setname(Sector sectorx, String name_x) 
+  public void setname(Sector sectorx, String name_x)
   { sectorx.setname(name_x);
     }
 
 
-public void setn(Sector sectorx, int n_x) 
+  public void setn(Sector sectorx, int n_x)
   { sectorx.setn(n_x);
     }
 
-
-public void setp(Sector sectorx, double p_x) 
+  public void setp(Sector sectorx, double p_x)
   { sectorx.setp(p_x);
     }
 
 
-public void setq(Sector sectorx, double q_x) 
+  public void setq(Sector sectorx, double q_x)
   { sectorx.setq(q_x);
     }
 
 
-public void setL(Sector sectorx, int L_x) 
+  public void setL(Sector sectorx, int L_x)
   { sectorx.setL(L_x);
     }
 
 
-public void setmu(Sector sectorx, double mu_x) 
+  public void setmu(Sector sectorx, double mu_x)
   { sectorx.setmu(mu_x);
     }
 
