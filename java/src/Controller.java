@@ -12,120 +12,120 @@ import java.io.*;
 
 
 class CDO
-  implements SystemTypes
+        implements SystemTypes
 {
-  private double ps0 = 0; // internal
-  private List sectors = new Vector(); // of Sector
+    private double ps0 = 0; // internal
+    private List sectors = new Vector(); // of Sector
 
-  public CDO()
-  {
-    this.ps0 = 0;
+    public CDO()
+    {
+        this.ps0 = 0;                         //rate of default
 
-  }
-
-
-
-  public String toString()
-  { String _res_ = "(CDO) ";
-    _res_ = _res_ + ps0;
-    return _res_;
-  }
-
-  public void setps0(double ps0_x) { ps0 = ps0_x;  }
-
-
-  public static void setAllps0(List cdos,double val)
-{ for (int i = 0; i < cdos.size(); i++)
-    { CDO cdox = (CDO) cdos.get(i);
-      Controller.inst().setps0(cdox,val); } }
-
-
-  public void setsectors(List sectorsxx) { sectors = sectorsxx;
-    }
- 
-  public void setsectors(int ind_x,Sector sectorsxx) { sectors.set(ind_x,sectorsxx); }
-
- public void addsectors(Sector sectorsxx) { sectors.add(sectorsxx);
-    }
- 
-  public void removesectors(Sector sectorsxx) { Vector _removedsectorssectorsxx = new Vector();
-  _removedsectorssectorsxx.add(sectorsxx);
-  sectors.removeAll(_removedsectorssectorsxx);
     }
 
-  public static void setAllsectors(List cdos,List _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().setsectors(cdox, _val); } }
-
-  public static void setAllsectors(List cdos,int _ind,Sector _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().setsectors(cdox,_ind,_val); } }
-
-  public static void addAllsectors(List cdos,Sector _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().addsectors(cdox, _val); } }
 
 
-  public static void removeAllsectors(List cdos,Sector _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().removesectors(cdox, _val); } }
+    public String toString()
+    { String _res_ = "(CDO) ";
+        _res_ = _res_ + ps0;
+        return _res_;
+    }
+
+    public void setps0(double ps0_x) { ps0 = ps0_x;  }                //set rate of default to ps0_x
 
 
-  public static void unionAllsectors(List cdos, List _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().unionsectors(cdox, _val); } }
-
-
-  public static void subtractAllsectors(List cdos, List _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().subtractsectors(cdox, _val); } }
-
-
-  public double getps0() { return ps0; }
-
-  public static List getAllps0(List cdos)
-  { List result = new Vector();
-    for (int i = 0; i < cdos.size(); i++)
+    public static void setAllps0(List cdos,double val)                //set rate of default of a list of CDOs
+    { for (int i = 0; i < cdos.size(); i++)
     { CDO cdox = (CDO) cdos.get(i);
-      if (result.contains(new Double(cdox.getps0()))) { }
-      else { result.add(new Double(cdox.getps0())); } }
-    return result; }
+        Controller.inst().setps0(cdox,val); } }
 
-  public static List getAllOrderedps0(List cdos)
-  { List result = new Vector();
-    for (int i = 0; i < cdos.size(); i++)
-    { CDO cdox = (CDO) cdos.get(i);
-      result.add(new Double(cdox.getps0())); } 
-    return result; }
 
-  public List getsectors() { return (Vector) ((Vector) sectors).clone(); }
+    public void setsectors(List sectorsxx) { sectors = sectorsxx;      // set sectors
+    }
 
-  public static List getAllsectors(List cdos)
-  { List result = new Vector();
-    for (int _i = 0; _i < cdos.size(); _i++)
+    public void setsectors(int ind_x,Sector sectorsxx) { sectors.set(ind_x,sectorsxx); } // set sectors
+
+    public void addsectors(Sector sectorsxx) { sectors.add(sectorsxx);                    //add new sector
+    }
+
+    public void removesectors(Sector sectorsxx) { Vector _removedsectorssectorsxx = new Vector();
+        _removedsectorssectorsxx.add(sectorsxx);
+        sectors.removeAll(_removedsectorssectorsxx);
+    }                                                                                      //
+
+    public static void setAllsectors(List cdos,List _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-      result = Set.union(result,cdox.getsectors()); }
-    return result; }
+        Controller.inst().setsectors(cdox, _val); } }
 
-  public static List getAllOrderedsectors(List cdos)
-  { List result = new Vector();
-    for (int _i = 0; _i < cdos.size(); _i++)
+    public static void setAllsectors(List cdos,int _ind,Sector _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-      result.addAll(cdox.getsectors()); }
-    return result; }
+        Controller.inst().setsectors(cdox,_ind,_val); } }
+
+    public static void addAllsectors(List cdos,Sector _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox = (CDO) cdos.get(_i);
+        Controller.inst().addsectors(cdox, _val); } }
+
+
+    public static void removeAllsectors(List cdos,Sector _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox = (CDO) cdos.get(_i);
+        Controller.inst().removesectors(cdox, _val); } }
+
+
+    public static void unionAllsectors(List cdos, List _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox = (CDO) cdos.get(_i);
+        Controller.inst().unionsectors(cdox, _val); } }
+
+
+    public static void subtractAllsectors(List cdos, List _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox = (CDO) cdos.get(_i);
+        Controller.inst().subtractsectors(cdox, _val); } }
+
+
+    public double getps0() { return ps0; }
+
+    public static List getAllps0(List cdos)
+    { List result = new Vector();
+        for (int i = 0; i < cdos.size(); i++)
+        { CDO cdox = (CDO) cdos.get(i);
+            if (result.contains(new Double(cdox.getps0()))) { }
+            else { result.add(new Double(cdox.getps0())); } }
+        return result; }
+
+    public static List getAllOrderedps0(List cdos)
+    { List result = new Vector();
+        for (int i = 0; i < cdos.size(); i++)
+        { CDO cdox = (CDO) cdos.get(i);
+            result.add(new Double(cdox.getps0())); }
+        return result; }
+
+    public List getsectors() { return (Vector) ((Vector) sectors).clone(); }
+
+    public static List getAllsectors(List cdos)
+    { List result = new Vector();
+        for (int _i = 0; _i < cdos.size(); _i++)
+        { CDO cdox = (CDO) cdos.get(_i);
+            result = Set.union(result,cdox.getsectors()); }
+        return result; }
+
+    public static List getAllOrderedsectors(List cdos)
+    { List result = new Vector();
+        for (int _i = 0; _i < cdos.size(); _i++)
+        { CDO cdox = (CDO) cdos.get(_i);
+            result.addAll(cdox.getsectors()); }
+        return result; }
 
     public double nocontagion(int k,int m)
-  {   double result = 0;
- 
-  result = Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getp() ),((Sector) sectors.get(k - 1)).getn() - m) * Math.pow(((Sector) sectors.get(k - 1)).getp(),m) * Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getq() ),m * ( ((Sector) sectors.get(k - 1)).getn() - m ));
-    return result;
-  }
+    {   double result = 0;
+
+        result = Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getp() ),((Sector) sectors.get(k - 1)).getn() - m) * Math.pow(((Sector) sectors.get(k - 1)).getp(),m) * Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getq() ),m * ( ((Sector) sectors.get(k - 1)).getn() - m ));
+        return result;
+    }                                                                // Davis and Lo distribution, m is number of default, k is the sector ID
 
 
     public double P(int k,int m)
