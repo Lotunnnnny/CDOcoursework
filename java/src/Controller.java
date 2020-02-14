@@ -19,7 +19,7 @@ class CDO
 
     public CDO()
     {
-        this.ps0 = 0;                         //rate of default
+        this.ps0 = 0;                         //probability of ZERO default
 
     }
 
@@ -51,28 +51,28 @@ class CDO
     public void removesectors(Sector sectorsxx) { Vector _removedsectorssectorsxx = new Vector();
         _removedsectorssectorsxx.add(sectorsxx);
         sectors.removeAll(_removedsectorssectorsxx);
-    }                                                                                      //
+    }                                                                                      //remove sector
 
     public static void setAllsectors(List cdos,List _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-        Controller.inst().setsectors(cdox, _val); } }
+        Controller.inst().setsectors(cdox, _val); } }                                      //set all sectors
 
     public static void setAllsectors(List cdos,int _ind,Sector _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-        Controller.inst().setsectors(cdox,_ind,_val); } }
+        Controller.inst().setsectors(cdox,_ind,_val); } }                                   //set all sectors
 
     public static void addAllsectors(List cdos,Sector _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-        Controller.inst().addsectors(cdox, _val); } }
+        Controller.inst().addsectors(cdox, _val); } }                                       //set all sectors
 
 
     public static void removeAllsectors(List cdos,Sector _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-        Controller.inst().removesectors(cdox, _val); } }
+        Controller.inst().removesectors(cdox, _val); } }                                    //remove all sectors
 
 
     public static void unionAllsectors(List cdos, List _val)
@@ -87,7 +87,7 @@ class CDO
         Controller.inst().subtractsectors(cdox, _val); } }
 
 
-    public double getps0() { return ps0; }
+    public double getps0() { return ps0; }                                                      // get value ps
 
     public static List getAllps0(List cdos)
     { List result = new Vector();
@@ -95,7 +95,7 @@ class CDO
         { CDO cdox = (CDO) cdos.get(i);
             if (result.contains(new Double(cdox.getps0()))) { }
             else { result.add(new Double(cdox.getps0())); } }
-        return result; }
+        return result; }                                                            // get valve ps from a list of cdos
 
     public static List getAllOrderedps0(List cdos)
     { List result = new Vector();
@@ -183,7 +183,7 @@ class CDO
     PS_cache.put(new Integer(s), new Double(result));
   }
   return result;
- }
+ }                                          //9.5.1 Probability when loss = s of all sectors
 
 
     public double VS(int k,int s)
@@ -191,7 +191,7 @@ class CDO
  
   result = Set.sumdouble(Set.collect_2(Set.integerSubrange(1,this.maxfails(k,s)),this,k,s));
     return result;
-  }
+  }                                         //9.5.1 Probability when loss = s of a certain sector
 
 
     public void test1(Sector s)
