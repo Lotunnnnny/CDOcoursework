@@ -22,6 +22,16 @@ public interface SystemTypes
     return _results_1;
   }
 
+  // Todo: test
+  public static List collect_1(List _l,CDO cdox,double s)
+  { List _results_1 = new Vector();
+      for (int _i = 0; _i < _l.size(); _i++)
+      { int k = ((Integer) _l.get(_i)).intValue();
+        _results_1.add(new Double(cdox.VS(k,s)));
+      }
+      return _results_1;
+  }
+
   public static List collect_0(List _l,CDO cdox,int k,int m)
   { List _results_0 = new Vector();
     for (int _i = 0; _i < _l.size(); _i++)
@@ -48,6 +58,16 @@ public interface SystemTypes
     }
     return _results_2;
   }
+
+  // Todo: test
+    public static List collect_2(List _l,CDO cdox,int k,double s)
+    { List _results_2 = new Vector();
+      for (int _i = 0; _i < _l.size(); _i++)
+      { int mk = ((Integer) _l.get(_i)).intValue();
+        _results_2.add(new Double(( ((Sector) cdox.getsectors().get(k - 1)).getmu() * mk * ((Sector) cdox.getsectors().get(k - 1)).getL() * cdox.PCond(k,mk) * cdox.PS(s - mk * ((Sector) cdox.getsectors().get(k - 1)).getL()) )));
+      }
+      return _results_2;
+    }
 
   public static List collect_4(List _l)
   { List _results_4 = new Vector();

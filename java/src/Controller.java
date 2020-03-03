@@ -1,3 +1,5 @@
+import com.sun.org.apache.regexp.internal.RE;
+
 import java.util.List;
 import java.util.Date;
 import java.util.Map;
@@ -15,7 +17,7 @@ class CDO
         implements SystemTypes
 {
     private double ps0 = 0; // internal
-    private List sectors = new Vector(); // of Sector
+    private static List sectors = new Vector(); // of Sector
 
     public CDO()
     {
@@ -161,6 +163,18 @@ class CDO
   }    return result;
   }
 
+  // Todo: test
+  public int maxfails(int k, double s)
+  {   int result = 0;
+
+    if (((Sector) sectors.get(k - 1)).getn() <= (int)Math.floor(s / ((Sector) sectors.get(k - 1)).getL()))
+    {   result = ((Sector) sectors.get(k - 1)).getn();
+
+    }  else   if (((Sector) sectors.get(k - 1)).getn() > ( s / ((Sector) sectors.get(k - 1)).getL() ))
+    {   result = (int)Math.floor(s / ((Sector) sectors.get(k - 1)).getL());
+
+    }    return result;
+  }
 
     public double PS(int s)
   {   double result = 0;
@@ -193,12 +207,95 @@ class CDO
     return result;
   }
 
+  // Todo: test
+  public double PS(double s)
+  {   double result = 0;
+    Object cached_result = PS_cache.get(s);
+    if (cached_result != null)
+    { result = ((Double) cached_result).doubleValue();
+      return result;
+    }
+    else
+    {   if (s < 0)
+    {   result = 0;
 
-    public void test1(Sector s)
+    }  else   if (s == 0)
+    {   result = ps0;
+
+    }  else   if (s > 0)
+    {   result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1,sectors.size()),this,s)) / s;
+
+    }
+      PS_cache.put(s, new Double(result));
+    }
+    return result;
+  }
+
+  // Todo: test
+  public double VS(int k, double s)
+  {   double result = 0;
+
+    result = Set.sumdouble(Set.collect_2(Set.integerSubrange(1,this.maxfails(k,s)),this,k,s));
+    return result;
+  }
+
+    // Todo: test
+    public double expectedLoss() {
+      double result = 0;
+      for (int k = 1; k <= sectors.size(); k++) {
+        Sector sector = (Sector) sectors.get(k-1);
+        double sum = 0;
+        for (int m = 1; m <= sector.getn(); m++) {
+          sum += m*P(k,m);
+        }
+        result += sector.getL()*sum;
+      }
+      return result;
+    }
+
+  // Todo: test
+  public double varianceOfLoss() {
+    double result = 0;
+    for (int k = 1; k <= sectors.size(); k++) {
+      Sector sector = (Sector) sectors.get(k-1);
+      for (int m = 1; m <= sector.getn(); m++) {
+        result += Math.pow(m,2)*Math.pow(sector.getL(),2)*P(k,m);
+      }
+    }
+    return result;
+  }
+
+  // Todo: test
+  public double sigmaOfLoss(){
+      return Math.sqrt(varianceOfLoss());
+  }
+
+  // Todo: test
+  public double riskContribution(int k) {
+      Sector sector = (Sector) sectors.get(k-1);
+      double result = 0;
+      for (int m = 1; m <= sector.getn(); m++) {
+        result += Math.pow(sector.getL(),2)*Math.pow(m,2)*P(k,m);
+      }
+      return result/sigmaOfLoss();
+  }
+
+  // Todo: test
+  public double borrowerRiskContribution(int k, int i) {
+    Sector sector = (Sector) sectors.get(k-1);
+    double result = 0;
+    for (int m = 1; m <= sector.getn(); m++) {
+      result += sector.getL()*Math.pow(m,2)*P(k,m);
+    }
+    return sector.getL()*result/sigmaOfLoss();
+  }
+
+
+  public void test1(Sector s)
   { Controller.inst().setmu(s,1 - Math.pow(( 1 - s.getp() ),s.getn()));
   }
 
-    public void test1outer()
+  public void test1outer()
   {  CDO cdox = this;
     List _range1 = cdox.getsectors();
   for (int _i0 = 0; _i0 < _range1.size(); _i0++)
@@ -208,15 +305,16 @@ class CDO
   }
 
 
-    public void test2()
+  public void test2()
   { Controller.inst().setps0(this,Math.exp(-Set.sumdouble(Sector.getAllOrderedmu(this.getsectors()))));
   }
 
-    public void test3()
+  public void test3()
   {     List _integer_list2 = new Vector();
     _integer_list2.addAll(Set.integerSubrange(0,50));
     for (int _ind3 = 0; _ind3 < _integer_list2.size(); _ind3++)
-    { int s = ((Integer) _integer_list2.get(_ind3)).intValue();
+    {
+      int s = ((Integer) _integer_list2.get(_ind3)).intValue();
         System.out.println("" + this.PS(s));
 
     }
@@ -238,6 +336,8 @@ class Sector
   private int L = 0; // internal
   private double mu = 0; // internal
 
+  private List borrowerInSectors;
+
   public Sector()
   {
     this.name = "";
@@ -249,7 +349,37 @@ class Sector
 
   }
 
+  public Sector(String name, List borrowerInSectors) {
+    this.name = name;
+    this.borrowerInSectors = borrowerInSectors;
+    this.n = borrowerInSectors.size();
+    calculatePfromBorrowers();
+    calculateQfromBorrowers();
+    calculateLfromBorrowers();
+    calculateMufromBorrowers();
+  }
 
+  private void calculatePfromBorrowers() {
+    for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
+      BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
+      L+=borrowerInSector.getBorrower().getP()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
+    }
+  }
+
+  private void calculateQfromBorrowers() {
+
+  }
+
+  private void calculateLfromBorrowers() {
+    for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
+      BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
+      L+=borrowerInSector.getBorrower().getL()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
+    }
+  }
+
+  private void calculateMufromBorrowers() {
+
+  }
 
   public String toString()
   { String _res_ = "(Sector) ";
@@ -418,7 +548,7 @@ class Sector
       result.add(new Double(sectorx.getmu())); } 
     return result; }
 
-    public double nocontagion(int m)
+  public double nocontagion(int m)
   {   double result = 0;
   Object cached_result = nocontagion_cache.get(new Integer(m));
   if (cached_result != null)
@@ -433,19 +563,64 @@ class Sector
   return result;
  }
 
-
-    public double contagion(int i,int m)
+  public double contagion(int i,int m)
   {   double result = 0;
  
   result = Math.pow(( 1 - p ),n - i) * Math.pow(p,i) * Math.pow(( 1 - q ),i * ( n - m )) * Math.pow(( 1 - Math.pow(( 1 - q ),i) ),m - i) * StatFunc.comb(m,i);
     return result;
   }
 
-
   private  java.util.Map nocontagion_cache = new java.util.HashMap();
 
 }
 
+class Borrower
+{
+  private double L;  // loss of default
+  private double p;  // probability of default
+
+  private List borrowerInSectors;
+
+  public Borrower(double L, double p) {
+    this.L = L;
+    this.p = p;
+  }
+
+  public double getL() {
+    return L;
+  }
+
+  public double getP() {
+    return p;
+  }
+
+}
+
+class BorrowerInSector
+{
+  private double omega;  // weighting of loss
+  private double theta;  //
+
+  private Borrower borrower;
+
+  public BorrowerInSector(double omega, double theta, Borrower borrower) {
+    this.omega = omega;
+    this.theta = theta;
+    this.borrower = borrower;
+  }
+
+  public double getOmega() {
+    return omega;
+  }
+
+  public double getTheta() {
+    return theta;
+  }
+
+  public Borrower getBorrower() {
+    return borrower;
+  }
+}
 
 class StatFunc
   implements SystemTypes
