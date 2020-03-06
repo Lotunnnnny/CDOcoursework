@@ -1,9 +1,5 @@
-import com.sun.org.apache.regexp.internal.RE;
-
 import java.util.List;
 import java.util.Date;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Vector;
 
 import java.lang.*;
@@ -18,6 +14,9 @@ class CDO
 {
     private double ps0 = 0; // internal
     private static List sectors = new Vector(); // of Sector
+
+    private static List borrowers = new Vector(); // all borrowers
+    private static List borrowerInSectors = new Vector(); // all relationship between borrowers and sectors
 
     public CDO()
     {
@@ -281,13 +280,28 @@ class CDO
   }
 
   // Todo: test
-  public double borrowerRiskContribution(int k, int i) {
-    Sector sector = (Sector) sectors.get(k-1);
+  public double borrowerRiskContribution(Borrower borrower) {
+    List thisBorrowerInSectors = borrower.getBorrowerInSectors();
+    List sectorsOfBorrower = borrower.getSectors();
+
     double result = 0;
-    for (int m = 1; m <= sector.getn(); m++) {
-      result += sector.getL()*Math.pow(m,2)*P(k,m);
+    for (int k = 1; k <= sectorsOfBorrower.size(); k++) {
+        Sector sector = (Sector) sectorsOfBorrower.get(k);
+        List allBorrowerInSector = sector.getBorrowerInSectors();
+        BorrowerInSector borrowerInSector = borrower.getBorrowerInSectorFrom(sector);
+        double inner = 0;
+        for (Object borrowerInSectorJ: allBorrowerInSector){
+            if (borrowerInSectorJ.equals(borrower)) continue;
+            inner += ((BorrowerInSector) borrowerInSectorJ).collect1();
+        }
+        inner += (borrowerInSector.collect2() + borrowerInSector.collect1()*inner);
+        double mProduct = 0;
+        for (int m = 1; m < sector.getn(); m++) {
+            mProduct = Math.pow(m,2);// Todo: complete with index k in all sectors but not sectorsOfBorrowers
+        }
+
     }
-    return sector.getL()*result/sigmaOfLoss();
+    return result;
   }
 
 
@@ -325,7 +339,6 @@ class CDO
 
 }
 
-
 class Sector
   implements SystemTypes
 {
@@ -337,6 +350,10 @@ class Sector
   private double mu = 0; // internal
 
   private List borrowerInSectors;
+
+  public List getBorrowerInSectors() {
+      return borrowerInSectors;
+  }
 
   public Sector()
   {
@@ -362,7 +379,7 @@ class Sector
   private void calculatePfromBorrowers() {
     for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
       BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
-      L+=borrowerInSector.getBorrower().getP()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
+      L+=borrowerInSector.getP()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
     }
   }
 
@@ -373,7 +390,7 @@ class Sector
   private void calculateLfromBorrowers() {
     for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
       BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
-      L+=borrowerInSector.getBorrower().getL()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
+      L+=borrowerInSector.getL()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
     }
   }
 
@@ -576,14 +593,24 @@ class Sector
 
 class Borrower
 {
+  private String name;
+
   private double L;  // loss of default
   private double p;  // probability of default
 
   private List borrowerInSectors;
 
+  public Borrower(Borrower borrower) {
+      this.name = borrower.name;
+      this.L = borrower.L;
+      this.p = borrower.p;
+      borrowerInSectors = borrower.borrowerInSectors;
+  }
+
   public Borrower(double L, double p) {
     this.L = L;
     this.p = p;
+    borrowerInSectors = new Vector();
   }
 
   public double getL() {
@@ -594,19 +621,43 @@ class Borrower
     return p;
   }
 
+  public List getBorrowerInSectors() {
+      return borrowerInSectors;
+  }
+
+  public List getSectors() {
+      List<Sector> sectors = new Vector<>();
+      for (Object borrowerInSector : borrowerInSectors) {
+          sectors.add(((BorrowerInSector) borrowerInSector).getSector());
+      }
+      return sectors;
+  }
+
+  public BorrowerInSector getBorrowerInSectorFrom(Sector sector) {
+      for (Object borrowerInSector : borrowerInSectors) {
+          if (((BorrowerInSector) borrowerInSector).getSector().equals(sector))
+              return ((BorrowerInSector) borrowerInSector);
+      }
+      return null;
+  }
+
+  public boolean equals(Borrower borrower) {
+        return (name == borrower.name);
+    }
 }
 
-class BorrowerInSector
+class BorrowerInSector extends Borrower
 {
   private double omega;  // weighting of loss
   private double theta;  //
 
-  private Borrower borrower;
+  private Sector sector;
 
-  public BorrowerInSector(double omega, double theta, Borrower borrower) {
+  public BorrowerInSector(double omega, double theta, Borrower borrower, Sector sector) {
+    super(borrower);
     this.omega = omega;
     this.theta = theta;
-    this.borrower = borrower;
+    this.sector = sector;
   }
 
   public double getOmega() {
@@ -617,8 +668,18 @@ class BorrowerInSector
     return theta;
   }
 
-  public Borrower getBorrower() {
-    return borrower;
+  public Sector getSector() {
+      return sector;
+  }
+
+  // omega*theta*L
+  public double collect1() {
+      return omega*theta*getL();
+  }
+
+  // (omega*theta)^2*L^2
+  public double collect2() {
+      return Math.pow(collect1(),2);
   }
 }
 
