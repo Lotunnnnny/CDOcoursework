@@ -299,7 +299,6 @@ class CDO
         for (int m = 1; m < sector.getn(); m++) {
             mProduct = Math.pow(m,2);// Todo: complete with index k in all sectors but not sectorsOfBorrowers
         }
-
     }
     return result;
   }
