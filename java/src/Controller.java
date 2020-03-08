@@ -1125,16 +1125,49 @@ public class Controller implements SystemTypes, ControllerInterface
     for (int _i = 0; _i < sectors.size(); _i++)
     { Sector sectorx_ = (Sector) sectors.get(_i);
        out.print("<sectors xsi:type=\"My:Sector\"");
-    out.print(" name=\"" + sectorx_.getname() + "\" ");
-    out.print(" n=\"" + sectorx_.getn() + "\" ");
-    out.print(" p=\"" + sectorx_.getp() + "\" ");
-    out.print(" q=\"" + sectorx_.getq() + "\" ");
-    out.print(" L=\"" + sectorx_.getL() + "\" ");
-    out.print(" mu=\"" + sectorx_.getmu() + "\" ");
-    out.println(" />");
-  }
+      out.print(" name=\"" + sectorx_.getname() + "\" ");
+      out.print(" n=\"" + sectorx_.getn() + "\" ");
+      out.print(" p=\"" + sectorx_.getp() + "\" ");
+      out.print(" q=\"" + sectorx_.getq() + "\" ");
+      out.print(" L=\"" + sectorx_.getL() + "\" ");
+      out.print(" mu=\"" + sectorx_.getmu() + "\" ");
+      out.print(" borrowerInSectors = \"");
+      List sectors_borrowers = sectorx_.getBorrowerInSectors();
+      for (int _j = 0; _j < sectors_borrowers.size(); _j++)
+      { out.print(" //@borrowerInSectors." + borrowerInSectors.indexOf(sectors_borrowers.get(_j)));
+      }
+      out.print("\"");
+      out.println(" />");
+    }
 
-    /* Could be printing out statistics data of CDOs */ //Todo: implement this block
+    /* Traverse attributes of borrowers */
+    for (int _i = 0; _i < borrowers.size(); _i++)
+    { Borrower borrowerx_ = (Borrower) borrowers.get(_i);
+      out.print("<borrowers xsi:type=\"My:Borrower\"");
+      out.print(" name=\"" + borrowerx_.getname() + "\" ");
+      out.print(" L=\"" + borrowerx_.getL() + "\" ");
+      out.print(" p=\"" + borrowerx_.getP() + "\" ");
+      out.print(" rc=\"" + borrowerx_.getrc() + "\" ");
+      List borrower_borrowerInSectors = borrowerx_.getBorrowerInSectors();
+      for (int _j = 0; _j < borrower_borrowerInSectors.size(); _j++)
+      { out.print(" //@borrowerInSectors." + borrowerInSectors.indexOf(borrower_borrowerInSectors.get(_j)));
+      }
+      out.print("\"");
+      out.println(" />");
+    }
+
+    /* Traverse attributes of borrowerInSectors */
+    for (int _i = 0; _i < borrowerInSectors.size(); _i++)
+    { BorrowerInSector borrowerInSectorx_ = (BorrowerInSector) borrowerInSectors.get(_i);
+      out.print("<borrowerInSectors xsi:type=\"My:BorrowerInSector\"");
+      out.print(" name=\"" + borrowerInSectorx_.getname() + "\" ");
+      out.print(" theta=\"" + borrowerInSectorx_.getTheta() + "\" ");
+      out.print(" omega=\"" + borrowerInSectorx_.getOmega() + "\" ");
+      out.println(" />");
+    }
+
+
+    /* Could be printing out statistics data of CDOs */
     for (int _i = 0; _i < statfuncs.size(); _i++)
     { StatFunc statfuncx_ = (StatFunc) statfuncs.get(_i);
        out.print("<statfuncs xsi:type=\"My:StatFunc\"");

@@ -43,11 +43,13 @@ public class GUI extends JFrame implements ActionListener
       return; } 
     if ("test".equals(cmd))
     {  cont.test() ;
-       cont.computeRC(); return; }
+       //cont.computeRC();
+       return; }
     if ("compute ps".equals(cmd))
     {  cont.test() ;  return; }
     if ("compute rc".equals(cmd))
-    {  cont.computeRC();  return; }
+    {  //cont.computeRC();
+      return; }
   }
 
   public static void main(String[] args)
