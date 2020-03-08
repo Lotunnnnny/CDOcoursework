@@ -12,6 +12,8 @@ public class GUI extends JFrame implements ActionListener
   JButton loadModelButton = new JButton("loadModel");
   JButton saveModelButton = new JButton("saveModel");
   JButton testButton = new JButton("test");
+  JButton psButton = new JButton("compute ps");
+  JButton rcButton = new JButton("compute rc");
 
  public GUI()
   { super("Select use case to execute");
@@ -27,21 +29,27 @@ public class GUI extends JFrame implements ActionListener
   testButton.addActionListener(this);
   }
 
-  //gitftyhjko
   public void actionPerformed(ActionEvent e)
   { if (e == null) { return; }
     String cmd = e.getActionCommand();
     if ("loadModel".equals(cmd))
-    { Controller.loadModel("java/res/in.txt");
+    { Controller.loadModel("java/res/in_poisson.txt");
       cont.checkCompleteness();
       System.err.println("Model loaded");
       return; } 
     if ("saveModel".equals(cmd))
-    { cont.saveModel("java/res/out.txt");
-      cont.saveXSI("java/res/xsi.txt");
+    { cont.saveModel("java/res/out_poisson.txt");
+      cont.saveXSI("java/res/xsi_poisson.txt");
       return; } 
     if ("test".equals(cmd))
-    {  cont.test() ;  return; } 
+    {  cont.test() ;
+       //cont.computeRC();
+       return; }
+    if ("compute ps".equals(cmd))
+    {  cont.test() ;  return; }
+    if ("compute rc".equals(cmd))
+    {  //cont.computeRC();
+      return; }
   }
 
   public static void main(String[] args)

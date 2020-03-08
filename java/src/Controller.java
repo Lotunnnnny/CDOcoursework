@@ -1,7 +1,5 @@
 import java.util.List;
 import java.util.Date;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Vector;
 
 import java.lang.*;
@@ -12,221 +10,334 @@ import java.io.*;
 
 
 class CDO
-  implements SystemTypes
+        implements SystemTypes
 {
-  private double ps0 = 0; // internal
-  private List sectors = new Vector(); // of Sector
+    private double ps0 = 0; // internal
+    private static List sectors = new Vector(); // of Sector
 
-  public CDO()
-  {
-    this.ps0 = 0;
+    private static List borrowers = new Vector(); // all borrowers
+    private static List borrowerInSectors = new Vector(); // all relationship between borrowers and sectors
 
-  }
+    private double sigma = 0;
+    private double variance = 0;
+    private double expectedLoss = 0;
 
+    public CDO()
+    {
+        this.ps0 = 0;                         //probability of ZERO default
 
-
-  public String toString()
-  { String _res_ = "(CDO) ";
-    _res_ = _res_ + ps0;
-    return _res_;
-  }
-
-  public void setps0(double ps0_x) { ps0 = ps0_x;  }
-
-
-  public static void setAllps0(List cdos,double val)
-{ for (int i = 0; i < cdos.size(); i++)
-    { CDO cdox = (CDO) cdos.get(i);
-      Controller.inst().setps0(cdox,val); } }
-
-
-  public void setsectors(List sectorsxx) { sectors = sectorsxx;
-    }
- 
-  public void setsectors(int ind_x,Sector sectorsxx) { sectors.set(ind_x,sectorsxx); }
-
- public void addsectors(Sector sectorsxx) { sectors.add(sectorsxx);
-    }
- 
-  public void removesectors(Sector sectorsxx) { Vector _removedsectorssectorsxx = new Vector();
-  _removedsectorssectorsxx.add(sectorsxx);
-  sectors.removeAll(_removedsectorssectorsxx);
     }
 
-  public static void setAllsectors(List cdos,List _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().setsectors(cdox, _val); } }
+    public String toString()
+    { String _res_ = "(CDO) ";
+        _res_ = _res_ + ps0;
+        return _res_;
+    }
 
-  public static void setAllsectors(List cdos,int _ind,Sector _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().setsectors(cdox,_ind,_val); } }
+    public void setps0(double ps0_x) { ps0 = ps0_x;  }                //set rate of default to ps0_x
 
-  public static void addAllsectors(List cdos,Sector _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().addsectors(cdox, _val); } }
-
-
-  public static void removeAllsectors(List cdos,Sector _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().removesectors(cdox, _val); } }
-
-
-  public static void unionAllsectors(List cdos, List _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().unionsectors(cdox, _val); } }
-
-
-  public static void subtractAllsectors(List cdos, List _val)
-  { for (int _i = 0; _i < cdos.size(); _i++)
-    { CDO cdox = (CDO) cdos.get(_i);
-      Controller.inst().subtractsectors(cdox, _val); } }
-
-
-  public double getps0() { return ps0; }
-
-  public static List getAllps0(List cdos)
-  { List result = new Vector();
-    for (int i = 0; i < cdos.size(); i++)
+    public static void setAllps0(List cdos,double val)                //set rate of default of a list of CDOs
+    { for (int i = 0; i < cdos.size(); i++)
     { CDO cdox = (CDO) cdos.get(i);
-      if (result.contains(new Double(cdox.getps0()))) { }
-      else { result.add(new Double(cdox.getps0())); } }
-    return result; }
+        Controller.inst().setps0(cdox,val); } }
 
-  public static List getAllOrderedps0(List cdos)
-  { List result = new Vector();
-    for (int i = 0; i < cdos.size(); i++)
-    { CDO cdox = (CDO) cdos.get(i);
-      result.add(new Double(cdox.getps0())); } 
-    return result; }
+    public void setsectors(List sectorsxx) { sectors = sectorsxx;      // set sectors
+    }
 
-  public List getsectors() { return (Vector) ((Vector) sectors).clone(); }
+    public void setsectors(int ind_x,Sector sectorsxx) { sectors.set(ind_x,sectorsxx); } // set sectors
 
-  public static List getAllsectors(List cdos)
-  { List result = new Vector();
-    for (int _i = 0; _i < cdos.size(); _i++)
+    public void addsectors(Sector sectorsxx) { sectors.add(sectorsxx);                    //add new sector
+    }
+
+    public void removesectors(Sector sectorsxx) { Vector _removedsectorssectorsxx = new Vector();
+        _removedsectorssectorsxx.add(sectorsxx);
+        sectors.removeAll(_removedsectorssectorsxx);
+    }                                                                                      //remove sector
+
+    public static void setAllsectors(List cdos,List _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-      result = Set.union(result,cdox.getsectors()); }
-    return result; }
+        Controller.inst().setsectors(cdox, _val); } }                                      //set all sectors
 
-  public static List getAllOrderedsectors(List cdos)
-  { List result = new Vector();
-    for (int _i = 0; _i < cdos.size(); _i++)
+    public static void setAllsectors(List cdos,int _ind,Sector _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-      result.addAll(cdox.getsectors()); }
-    return result; }
+        Controller.inst().setsectors(cdox,_ind,_val); } }                                   //set all sectors
+
+    public static void addAllsectors(List cdos,Sector _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox = (CDO) cdos.get(_i);
+        Controller.inst().addsectors(cdox, _val); } }                                       //set all sectors
+
+    public static void removeAllsectors(List cdos,Sector _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox = (CDO) cdos.get(_i);
+        Controller.inst().removesectors(cdox, _val); } }                                    //remove all sectors
+
+    public static void unionAllsectors(List cdos, List _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox = (CDO) cdos.get(_i);
+        Controller.inst().unionsectors(cdox, _val); } }
+
+    public static void subtractAllsectors(List cdos, List _val)
+    { for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox = (CDO) cdos.get(_i);
+        Controller.inst().subtractsectors(cdox, _val); } }
+
+    public double getps0() { return ps0; }                                                      // get value ps
+
+    public static List getAllps0(List cdos)
+    { List result = new Vector();
+        for (int i = 0; i < cdos.size(); i++)
+        { CDO cdox = (CDO) cdos.get(i);
+            if (result.contains(new Double(cdox.getps0()))) { }
+            else { result.add(new Double(cdox.getps0())); } }
+        return result; }                                                            // get valve ps from a list of cdos
+
+    public static List getAllOrderedps0(List cdos)
+    { List result = new Vector();
+        for (int i = 0; i < cdos.size(); i++)
+        { CDO cdox = (CDO) cdos.get(i);
+            result.add(new Double(cdox.getps0())); }
+        return result; }
+
+    public List getsectors() { return (Vector) ((Vector) sectors).clone(); }
+
+    public static List getAllsectors(List cdos)
+    { List result = new Vector();
+        for (int _i = 0; _i < cdos.size(); _i++)
+        { CDO cdox = (CDO) cdos.get(_i);
+            result = Set.union(result,cdox.getsectors()); }
+        return result; }
+
+    public static List getAllOrderedsectors(List cdos)
+    { List result = new Vector();
+        for (int _i = 0; _i < cdos.size(); _i++)
+        { CDO cdox = (CDO) cdos.get(_i);
+            result.addAll(cdox.getsectors()); }
+        return result; }
 
     public double nocontagion(int k,int m)
-  {   double result = 0;
- 
-  result = Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getp() ),((Sector) sectors.get(k - 1)).getn() - m) * Math.pow(((Sector) sectors.get(k - 1)).getp(),m) * Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getq() ),m * ( ((Sector) sectors.get(k - 1)).getn() - m ));
-    return result;
-  }
+    {   double result = 0;
+
+        result = Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getp() ),((Sector) sectors.get(k - 1)).getn() - m) * Math.pow(((Sector) sectors.get(k - 1)).getp(),m) * Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getq() ),m * ( ((Sector) sectors.get(k - 1)).getn() - m ));
+        return result;
+    }                                                                // Davis and Lo distribution, m is number of default, k is the sector ID
 
 
     public double P(int k,int m)
-  {   double result = 0;
- 
-  result = StatFunc.comb(((Sector) sectors.get(k - 1)).getn(),m) * ( ((Sector) sectors.get(k - 1)).nocontagion(m) + Set.sumdouble(Set.collect_0(Set.integerSubrange(1,m - 1),this,k,m)) );
-    return result;
-  }
+    {   double result = 0;
+
+      result = StatFunc.comb(((Sector) sectors.get(k - 1)).getn(),m) * ( ((Sector) sectors.get(k - 1)).nocontagion(m) + Set.sumdouble(Set.collect_0(Set.integerSubrange(1,m - 1),this,k,m)) );
+      return result;
+    }
 
 
     public double PCond(int k,int m)
-  {   double result = 0;
- 
-  if (m >= 1) 
-  {   result = this.P(k,m) / ( 1 - Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getp() ),((Sector) sectors.get(k - 1)).getn()) );
- 
-  }  else   if (m < 1) 
-  {   result = 0;
- 
-  }    return result;
-  }
+    {   double result = 0;
+
+    if (m >= 1)
+    {   result = this.P(k,m) / ( 1 - Math.pow(( 1 - ((Sector) sectors.get(k - 1)).getp() ),((Sector) sectors.get(k - 1)).getn()) );
+
+    }  else   if (m < 1)
+    {   result = 0;
+
+    }    return result;
+    }
 
 
     public int maxfails(int k,int s)
-  {   int result = 0;
- 
-  if (((Sector) sectors.get(k - 1)).getn() <= ( s / ((Sector) sectors.get(k - 1)).getL() )) 
-  {   result = ((Sector) sectors.get(k - 1)).getn();
- 
-  }  else   if (((Sector) sectors.get(k - 1)).getn() > ( s / ((Sector) sectors.get(k - 1)).getL() )) 
-  {   result = s / ((Sector) sectors.get(k - 1)).getL();
- 
-  }    return result;
-  }
+    {   int result = 0;
 
+    if (((Sector) sectors.get(k - 1)).getn() <= ( s / ((Sector) sectors.get(k - 1)).getL() ))
+    {   result = ((Sector) sectors.get(k - 1)).getn();
+
+    }  else   if (((Sector) sectors.get(k - 1)).getn() > ( s / ((Sector) sectors.get(k - 1)).getL() ))
+    {   result = s / ((Sector) sectors.get(k - 1)).getL();
+
+    }    return result;
+    }
+
+    // Todo: test
+    public int maxfails(int k, double s)
+    {   int result = 0;
+
+      if (((Sector) sectors.get(k - 1)).getn() <= (int)Math.floor(s / ((Sector) sectors.get(k - 1)).getL()))
+      {   result = ((Sector) sectors.get(k - 1)).getn();
+
+      }  else   if (((Sector) sectors.get(k - 1)).getn() > ( s / ((Sector) sectors.get(k - 1)).getL() ))
+      {   result = (int)Math.floor(s / ((Sector) sectors.get(k - 1)).getL());
+
+      }    return result;
+    }
 
     public double PS(int s)
-  {   double result = 0;
-  Object cached_result = PS_cache.get(new Integer(s));
-  if (cached_result != null)
-  { result = ((Double) cached_result).doubleValue(); 
-    return result; 
-  }
-  else 
-  {   if (s < 0) 
-  {   result = 0;
- 
-  }  else   if (s == 0) 
-  {   result = ps0;
- 
-  }  else   if (s > 0) 
-  {   result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1,sectors.size()),this,s)) / s;
- 
-  }
-    PS_cache.put(new Integer(s), new Double(result));
-  }
-  return result;
- }
+    {   double result = 0;
+    Object cached_result = PS_cache.get(new Integer(s));
+    if (cached_result != null)
+    { result = ((Double) cached_result).doubleValue();
+      return result;
+    }
+    else
+    {   if (s < 0)
+    {   result = 0;
+
+    }  else   if (s == 0)
+    {   result = ps0;
+
+    }  else   if (s > 0)
+    {   result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1,sectors.size()),this,s)) / s;
+
+    }
+      PS_cache.put(new Integer(s), new Double(result));
+    }
+    return result;
+   }                                          //9.5.1 Probability when loss = s of all sectors
 
 
     public double VS(int k,int s)
-  {   double result = 0;
- 
-  result = Set.sumdouble(Set.collect_2(Set.integerSubrange(1,this.maxfails(k,s)),this,k,s));
+    {   double result = 0;
+
+    result = Set.sumdouble(Set.collect_2(Set.integerSubrange(1,this.maxfails(k,s)),this,k,s));
+      return result;
+    }                                         //9.5.1 Probability when loss = s of a certain sector
+
+    // Todo: test
+    public double PS(double s)
+    {   double result = 0;
+      Object cached_result = PS_cache.get(s);
+      if (cached_result != null)
+      { result = ((Double) cached_result).doubleValue();
+        return result;
+      }
+      else
+      {   if (s < 0)
+      {   result = 0;
+
+      }  else   if (s == 0)
+      {   result = ps0;
+
+      }  else   if (s > 0)
+      {   result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1,sectors.size()),this,s)) / s;
+
+      }
+        PS_cache.put(s, new Double(result));
+      }
+      return result;
+    }
+
+    // Todo: test
+    public double VS(int k, double s)
+    {   double result = 0;
+
+      result = Set.sumdouble(Set.collect_2(Set.integerSubrange(1,this.maxfails(k,s)),this,k,s));
+      return result;
+    }
+
+    // Todo: test
+    public double expectedLoss() {
+      double result = 0;
+      for (int k = 1; k <= sectors.size(); k++) {
+        Sector sector = (Sector) sectors.get(k-1);
+        double sum = 0;
+        for (int m = 1; m <= sector.getn(); m++) {
+          sum += m*P(k,m);
+        }
+        result += sector.getL()*sum;
+      }
+      return result;
+    }
+
+  // Todo: test
+  public double varianceOfLoss() {
+    double result = 0;
+    for (int k = 1; k <= sectors.size(); k++) {
+      Sector sector = (Sector) sectors.get(k-1);
+      for (int m = 1; m <= sector.getn(); m++) {
+        result += Math.pow(m,2)*Math.pow(sector.getL(),2)*P(k,m);
+      }
+    }
     return result;
   }
 
+  // Todo: test
+  public double sigmaOfLoss(){
+      return Math.sqrt(varianceOfLoss());
+  }
+
+  // Todo: test
+  public double riskContribution(int k) {
+      Sector sector = (Sector) sectors.get(k-1);
+      double result = 0;
+      for (int m = 1; m <= sector.getn(); m++) {
+        result += Math.pow(sector.getL(),2)*Math.pow(m,2)*P(k,m);
+      }
+      return result/sigmaOfLoss();
+  }
+
+  // Todo: test
+  public double borrowerRiskContribution(Borrower borrower) {
+    List thisBorrowerInSectors = borrower.getBorrowerInSectors();
+    List sectorsOfBorrower = borrower.getSectors();
+
+    double result = 0;
+    for (int k = 1; k <= sectorsOfBorrower.size(); k++) {
+        Sector sector = (Sector) sectorsOfBorrower.get(k);
+        List allBorrowerInSector = sector.getBorrowerInSectors();
+        BorrowerInSector borrowerInSector = borrower.getBorrowerInSectorFrom(sector);
+        double inner = 0;
+        for (Object borrowerInSectorJ: allBorrowerInSector){
+            if (borrowerInSectorJ.equals(borrower)) continue;
+            inner += ((BorrowerInSector) borrowerInSectorJ).collect1();
+        }
+        inner += (borrowerInSector.collect2() + borrowerInSector.collect1()*inner);
+        double mProduct = 0;
+        for (int m = 1; m < sector.getn(); m++) {
+            mProduct = Math.pow(m,2);// Todo: complete with index k in all sectors but not sectorsOfBorrowers
+        }
+    }
+    return result;
+  }
+
+    public BorrowerInSector getBorrowerInSector(int k, int a) {
+      Borrower borrowerA = (Borrower) borrowers.get(a-1);
+      Sector sectorK = (Sector) sectors.get(k-1);
+    return borrowerA.getBorrowerInSectorFrom(sectorK);
+  }
 
     public void test1(Sector s)
-  { Controller.inst().setmu(s,1 - Math.pow(( 1 - s.getp() ),s.getn()));
-  }
+    { Controller.inst().setmu(s,1 - Math.pow(( 1 - s.getp() ),s.getn()));
+    }
 
     public void test1outer()
-  {  CDO cdox = this;
-    List _range1 = cdox.getsectors();
-  for (int _i0 = 0; _i0 < _range1.size(); _i0++)
-  { Sector s = (Sector) _range1.get(_i0);
-       this.test1(s);
-  }
-  }
+    {  CDO cdox = this;
+      List _range1 = cdox.getsectors();
+    for (int _i0 = 0; _i0 < _range1.size(); _i0++)
+    { Sector s = (Sector) _range1.get(_i0);
+         this.test1(s);
+    }
+    }
 
 
     public void test2()
-  { Controller.inst().setps0(this,Math.exp(-Set.sumdouble(Sector.getAllOrderedmu(this.getsectors()))));
-  }
-
-    public void test3()
-  {     List _integer_list2 = new Vector();
-    _integer_list2.addAll(Set.integerSubrange(0,50));
-    for (int _ind3 = 0; _ind3 < _integer_list2.size(); _ind3++)
-    { int s = ((Integer) _integer_list2.get(_ind3)).intValue();
-        System.out.println("" + this.PS(s));
-
+    { Controller.inst().setps0(this,Math.exp(-Set.sumdouble(Sector.getAllOrderedmu(this.getsectors()))));
     }
 
-  }
+    public void test3()
+    {     List _integer_list2 = new Vector();
+      _integer_list2.addAll(Set.integerSubrange(0,50));
+      for (int _ind3 = 0; _ind3 < _integer_list2.size(); _ind3++)
+      {
+        int s = ((Integer) _integer_list2.get(_ind3)).intValue();
+          System.out.println("" + this.PS(s));
+
+      }
+
+    }
 
   private  java.util.Map PS_cache = new java.util.HashMap();
 
 }
-
 
 class Sector
   implements SystemTypes
@@ -237,6 +348,17 @@ class Sector
   private double q = 0; // internal
   private int L = 0; // internal
   private double mu = 0; // internal
+
+  private List borrowerInSectors = new Vector();
+  private CDO cdo = null;
+
+  public void setBorrowerInSectors(List borrowerInSectors) {
+    this.borrowerInSectors = borrowerInSectors;
+  }
+
+  public List getBorrowerInSectors() {
+      return borrowerInSectors;
+  }
 
   public Sector()
   {
@@ -249,7 +371,49 @@ class Sector
 
   }
 
+  public CDO getCdo() {
+    return cdo;
+  }
 
+  public void setCdo(CDO cdo) {
+    this.cdo = cdo;
+  }
+
+  public Sector(String name, List borrowerInSectors) {
+    this.name = name;
+    this.borrowerInSectors = borrowerInSectors;
+    this.n = borrowerInSectors.size();
+    calculatePfromBorrowers();
+    calculateQfromBorrowers();
+    calculateLfromBorrowers();
+    calculateMufromBorrowers();
+  }
+
+  private void calculatePfromBorrowers() {
+    for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
+      BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
+      L+=borrowerInSector.getP()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
+    }
+  }
+
+  private void calculateQfromBorrowers() {
+
+  }
+
+  private void calculateLfromBorrowers() {
+    for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
+      BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
+      L+=borrowerInSector.getL()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
+    }
+  }
+
+  private void calculateMufromBorrowers() {
+
+  }
+
+  public void addborrowerInSectors(BorrowerInSector borrowerInSector) {
+    borrowerInSectors.add(borrowerInSector);
+  }
 
   public String toString()
   { String _res_ = "(Sector) ";
@@ -418,7 +582,7 @@ class Sector
       result.add(new Double(sectorx.getmu())); } 
     return result; }
 
-    public double nocontagion(int m)
+  public double nocontagion(int m)
   {   double result = 0;
   Object cached_result = nocontagion_cache.get(new Integer(m));
   if (cached_result != null)
@@ -433,19 +597,165 @@ class Sector
   return result;
  }
 
-
-    public double contagion(int i,int m)
+  public double contagion(int i,int m)
   {   double result = 0;
  
   result = Math.pow(( 1 - p ),n - i) * Math.pow(p,i) * Math.pow(( 1 - q ),i * ( n - m )) * Math.pow(( 1 - Math.pow(( 1 - q ),i) ),m - i) * StatFunc.comb(m,i);
     return result;
   }
 
-
   private  java.util.Map nocontagion_cache = new java.util.HashMap();
 
 }
 
+class Borrower
+{
+  private String name = "";
+
+  private double L = 0;  // loss of default
+  private double p = 0;  // probability of default
+
+  private double rc = 0;
+
+  private List borrowerInSectors = new Vector();
+
+  public Borrower() {}
+
+  public Borrower(Borrower borrower) {
+      this.name = borrower.name;
+      this.L = borrower.L;
+      this.p = borrower.p;
+      borrowerInSectors = borrower.borrowerInSectors;
+  }
+
+  public Borrower(double L, double p) {
+    this.L = L;
+    this.p = p;
+    borrowerInSectors = new Vector();
+  }
+
+  public void setname(String name) {
+    this.name = name;
+  }
+
+  public void setL(double L) {this.L = L;}
+
+  public void setp(double p) {this.p = p;}
+
+  public void setrc(double rc) {this.rc = rc;}
+
+  public String getname() {return name;}
+
+  public double getL() {
+    return L;
+  }
+
+  public double getP() {
+    return p;
+  }
+
+  public double getrc() {return rc;}
+
+  public void addborrowerInSectors(Borrower borrowerInSector) {
+    borrowerInSectors.add(borrowerInSector);
+  }
+
+  public List getBorrowerInSectors() {
+      return borrowerInSectors;
+  }
+
+  public List getSectors() {
+      List<Sector> sectors = new Vector<>();
+      for (Object borrowerInSector : borrowerInSectors) {
+          sectors.add(((BorrowerInSector) borrowerInSector).getSector());
+      }
+      return sectors;
+  }
+
+  public BorrowerInSector getBorrowerInSectorFrom(Sector sector) {
+      for (Object borrowerInSector : borrowerInSectors) {
+          if (((BorrowerInSector) borrowerInSector).getSector().equals(sector))
+              return ((BorrowerInSector) borrowerInSector);
+      }
+      return null;
+  }
+
+  public boolean equals(Borrower borrower) {
+        return (name == borrower.name);
+    }
+
+  public String toString()
+  { String _res_ = "(Borrower) ";
+    _res_ = _res_ + name + ",";
+    _res_ = _res_ + L + ",";
+    _res_ = _res_ + p + ",";
+    return _res_;
+  }
+}
+
+class BorrowerInSector extends Borrower
+{
+  private double omega = 0;  // weighting of loss
+  private double theta = 0;  //
+
+  private Borrower borrower = null;
+  private Sector sector = null;
+
+  public BorrowerInSector() {}
+
+  public BorrowerInSector(double omega, double theta, Borrower borrower, Sector sector) {
+    super(borrower);
+    this.omega = omega;
+    this.theta = theta;
+    this.sector = sector;
+  }
+
+  public void setomega(double omega) {
+    this.omega = omega;
+  }
+
+  public void settheta(double theta) {
+    this.theta = theta;
+  }
+
+  public void setborrower(Borrower borrower) {
+    this.borrower = borrower;
+  }
+
+  public double getOmega() {
+    return omega;
+  }
+
+  public double getTheta() {
+    return theta;
+  }
+
+  public Sector getSector() {
+      return sector;
+  }
+
+  public Borrower getBorrower() {return borrower;}
+
+  // omega*theta*L
+  public double collect1() {
+      return omega*theta*getL();
+  }
+
+  // (omega*theta)^2*L^2
+  public double collect2() {
+      return Math.pow(collect1(),2);
+  }
+
+  public String toString()
+  { String _res_ = "(BorrowerInSector) ";
+    _res_ = _res_ + getname() + ",";
+    _res_ = _res_ + getL() + ",";
+    _res_ = _res_ + getP() + ",";
+    _res_ = _res_ + omega + ",";
+    _res_ = _res_ + theta + ",";
+    return _res_;
+  }
+}
 
 class StatFunc
   implements SystemTypes
@@ -489,12 +799,12 @@ class StatFunc
 
 }
 
-
-
 public class Controller implements SystemTypes, ControllerInterface
 {
   Vector cdos = new Vector();
   Vector sectors = new Vector();
+  Vector borrowers = new Vector();
+  Vector borrowerInSectors = new Vector();
   Vector statfuncs = new Vector();
   private static Controller uniqueInstance; 
 
@@ -505,8 +815,39 @@ public class Controller implements SystemTypes, ControllerInterface
   public static Controller inst() 
     { if (uniqueInstance == null) 
     { uniqueInstance = new Controller(); }
-    return uniqueInstance; } 
+    return uniqueInstance; }
 
+  // Todo: complete
+  public static void computeLPinSector() {
+
+  }
+
+  // Todo: test
+  public static void linkBorrowerWithSector() {
+    Vector borrowerInSectors = uniqueInstance.borrowerInSectors;
+    for (Object borrowerInSector:borrowerInSectors) {
+      Borrower borrower = ((BorrowerInSector) borrowerInSector).getBorrower();
+      ((BorrowerInSector) borrowerInSector).setname(borrower.getname());
+      ((BorrowerInSector) borrowerInSector).setL(borrower.getL());
+      ((BorrowerInSector) borrowerInSector).setp(borrower.getP());
+    }
+  }
+
+  // Todo: print test
+  public static void printTest() {
+    for (Object cdo:uniqueInstance.cdos) {
+      System.out.println(cdo.toString());
+    }
+    for (Object sector:uniqueInstance.sectors) {
+      System.out.println(sector.toString());
+    }
+    for (Object borrower:uniqueInstance.borrowers) {
+      System.out.println(borrower.toString());
+    }
+    for (Object borrowerInSector:uniqueInstance.borrowerInSectors) {
+      System.out.println(borrowerInSector.toString());
+    }
+  }
 
   public static void loadModel(String file)
   {
@@ -525,14 +866,14 @@ public class Controller implements SystemTypes, ControllerInterface
         catch (Exception e)
         { return; }
         if (line1 == null)
-        { return; }
+        { break; }
         line1 = line1.trim();
 
         if (line1.length() == 0) { continue; }
         String left;
         String op;
         String right;
-        if (line1.charAt(line1.length() - 1) == '"')
+        if (line1.charAt(line1.length() - 1) == '"')  // name string
         { int eqind = line1.indexOf("="); 
           if (eqind == -1) { continue; }
           else 
@@ -650,7 +991,10 @@ public class Controller implements SystemTypes, ControllerInterface
           else { System.err.println("No attribute: " + att); }
         }
       }
-    } catch (Exception e) { }
+
+      } catch (Exception e) { e.printStackTrace();}
+
+    linkBorrowerWithSector();
   }
 
   /* Find and return a method named "name" in class named "c" */
@@ -675,41 +1019,85 @@ public class Controller implements SystemTypes, ControllerInterface
     try { out = new PrintWriter(new BufferedWriter(new FileWriter(outfile))); }
     catch (Exception e) { return; }
 
-    /* Print out ps0 of CDOs*/ //Todo: find out what does ps0 mean
+    /* Print out ps0 of CDOs*/
     for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox_ = (CDO) cdos.get(_i);
       out.println("cdox_" + _i + " : CDO");
       out.println("cdox_" + _i + ".ps0 = " + cdox_.getps0());
     }
 
-  /* Traverse attributes of sectors */
-  for (int _i = 0; _i < sectors.size(); _i++)
-  { Sector sectorx_ = (Sector) sectors.get(_i);
-    out.println("sectorx_" + _i + " : Sector");
-    out.println("sectorx_" + _i + ".name = \"" + sectorx_.getname() + "\"");
-    out.println("sectorx_" + _i + ".n = " + sectorx_.getn());
-    out.println("sectorx_" + _i + ".p = " + sectorx_.getp());
-    out.println("sectorx_" + _i + ".q = " + sectorx_.getq());
-    out.println("sectorx_" + _i + ".L = " + sectorx_.getL());
-    out.println("sectorx_" + _i + ".mu = " + sectorx_.getmu());
-  }
+    out.println();
 
-  /* Printing out statistics data of CDOs */ //Todo: implement this block
-  for (int _i = 0; _i < statfuncs.size(); _i++)
-  { StatFunc statfuncx_ = (StatFunc) statfuncs.get(_i);
-    out.println("statfuncx_" + _i + " : StatFunc");
-  }
-
-  /* Traverse CDOs and specify relationship between sectors and CDOs */
-  for (int _i = 0; _i < cdos.size(); _i++)
-  { CDO cdox_ = (CDO) cdos.get(_i);
-    List cdo_sectors_Sector = cdox_.getsectors();
-    for (int _j = 0; _j < cdo_sectors_Sector.size(); _j++)
-    { out.println("sectorx_" + sectors.indexOf(cdo_sectors_Sector.get(_j)) + " : cdox_" + _i + ".sectors");
+    /* Traverse attributes of sectors */
+    for (int _i = 0; _i < sectors.size(); _i++)
+    { Sector sectorx_ = (Sector) sectors.get(_i);
+      out.println("sectorx_" + _i + " : Sector");
+      out.println("sectorx_" + _i + ".name = \"" + sectorx_.getname() + "\"");
+      out.println("sectorx_" + _i + ".n = " + sectorx_.getn());
+      out.println("sectorx_" + _i + ".p = " + sectorx_.getp());
+      out.println("sectorx_" + _i + ".q = " + sectorx_.getq());
+      out.println("sectorx_" + _i + ".L = " + sectorx_.getL());
+      out.println("sectorx_" + _i + ".mu = " + sectorx_.getmu());
     }
-  }
 
-  out.close();
+    out.println();
+
+    for (int _i = 0; _i < borrowers.size(); _i++) {
+      Borrower borrowerx_ = (Borrower) borrowers.get(_i);
+      out.println("borrowerx_" + _i + " : Borrower");
+      out.println("borrowerx_" + _i + ".name = \"" + borrowerx_.getname() + "\"");
+      out.println("borrowerx_" + _i + ".L = " + borrowerx_.getL());
+      out.println("borrowerx_" + _i + ".p = " + borrowerx_.getP());
+      out.println("borrowerx_" + _i + ".risk_contribution = " + borrowerx_.getrc());
+    }
+
+    out.println();
+
+    for (int _i = 0; _i < borrowerInSectors.size(); _i++) {
+      BorrowerInSector borrowerInSectorx_ = (BorrowerInSector) borrowerInSectors.get(_i);
+      out.println("borrowerInSectorx_" + _i + " : BorrowerInSector");
+      out.println("borrowerInSectorx_" + _i + ".theta = " + borrowerInSectorx_.getTheta() + "");
+      out.println("borrowerInSectorx_" + _i + ".omega = " + borrowerInSectorx_.getOmega() + "");
+      out.println("borrowerInSectorx_" + _i + ".borrower = " + borrowerInSectorx_.getBorrower().getname() + "");
+    }
+
+    /* Printing out statistics data of CDOs */
+    for (int _i = 0; _i < statfuncs.size(); _i++)
+    { StatFunc statfuncx_ = (StatFunc) statfuncs.get(_i);
+      out.println("statfuncx_" + _i + " : StatFunc");
+    }
+
+    out.println();
+
+    for (int _i = 0; _i < borrowers.size(); _i++)
+    { Borrower borrower = (Borrower) borrowers.get(_i);
+      List borrower_borrowerInSectors = borrower.getBorrowerInSectors();
+      for (int _j = 0; _j < borrower_borrowerInSectors.size(); _j++)
+      { out.println("borrowerInSectorx_" + borrowerInSectors.indexOf(borrower_borrowerInSectors.get(_j)) + " : borrowerx_" + _i + ".borrowerInSectors");
+      }
+    }
+
+    out.println();
+
+    for (int _i = 0; _i < sectors.size(); _i++)
+    { Sector sectorx_ = (Sector) sectors.get(_i);
+      List sector_borrowers = sectorx_.getBorrowerInSectors();
+      for (int _j = 0; _j < sector_borrowers.size(); _j++)
+      { out.println("borrowerInSectorx_" + borrowerInSectors.indexOf(sector_borrowers.get(_j)) + " : sectorx_" + _i + ".borrowerInSectors");
+      }
+    }
+
+    out.println();
+
+    for (int _i = 0; _i < cdos.size(); _i++)
+    { CDO cdox_ = (CDO) cdos.get(_i);
+      List cdo_sectors_Sector = cdox_.getsectors();
+      for (int _j = 0; _j < cdo_sectors_Sector.size(); _j++)
+      { out.println("sectorx_" + sectors.indexOf(cdo_sectors_Sector.get(_j)) + " : cdox_" + _i + ".sectors");
+      }
+    }
+
+    out.close();
   }
 
   /* Save model in xsi format */
@@ -737,16 +1125,49 @@ public class Controller implements SystemTypes, ControllerInterface
     for (int _i = 0; _i < sectors.size(); _i++)
     { Sector sectorx_ = (Sector) sectors.get(_i);
        out.print("<sectors xsi:type=\"My:Sector\"");
-    out.print(" name=\"" + sectorx_.getname() + "\" ");
-    out.print(" n=\"" + sectorx_.getn() + "\" ");
-    out.print(" p=\"" + sectorx_.getp() + "\" ");
-    out.print(" q=\"" + sectorx_.getq() + "\" ");
-    out.print(" L=\"" + sectorx_.getL() + "\" ");
-    out.print(" mu=\"" + sectorx_.getmu() + "\" ");
-    out.println(" />");
-  }
+      out.print(" name=\"" + sectorx_.getname() + "\" ");
+      out.print(" n=\"" + sectorx_.getn() + "\" ");
+      out.print(" p=\"" + sectorx_.getp() + "\" ");
+      out.print(" q=\"" + sectorx_.getq() + "\" ");
+      out.print(" L=\"" + sectorx_.getL() + "\" ");
+      out.print(" mu=\"" + sectorx_.getmu() + "\" ");
+      out.print(" borrowerInSectors = \"");
+      List sectors_borrowers = sectorx_.getBorrowerInSectors();
+      for (int _j = 0; _j < sectors_borrowers.size(); _j++)
+      { out.print(" //@borrowerInSectors." + borrowerInSectors.indexOf(sectors_borrowers.get(_j)));
+      }
+      out.print("\"");
+      out.println(" />");
+    }
 
-    /* Could be printing out statistics data of CDOs */ //Todo: implement this block
+    /* Traverse attributes of borrowers */
+    for (int _i = 0; _i < borrowers.size(); _i++)
+    { Borrower borrowerx_ = (Borrower) borrowers.get(_i);
+      out.print("<borrowers xsi:type=\"My:Borrower\"");
+      out.print(" name=\"" + borrowerx_.getname() + "\" ");
+      out.print(" L=\"" + borrowerx_.getL() + "\" ");
+      out.print(" p=\"" + borrowerx_.getP() + "\" ");
+      out.print(" rc=\"" + borrowerx_.getrc() + "\" ");
+      List borrower_borrowerInSectors = borrowerx_.getBorrowerInSectors();
+      for (int _j = 0; _j < borrower_borrowerInSectors.size(); _j++)
+      { out.print(" //@borrowerInSectors." + borrowerInSectors.indexOf(borrower_borrowerInSectors.get(_j)));
+      }
+      out.print("\"");
+      out.println(" />");
+    }
+
+    /* Traverse attributes of borrowerInSectors */
+    for (int _i = 0; _i < borrowerInSectors.size(); _i++)
+    { BorrowerInSector borrowerInSectorx_ = (BorrowerInSector) borrowerInSectors.get(_i);
+      out.print("<borrowerInSectors xsi:type=\"My:BorrowerInSector\"");
+      out.print(" name=\"" + borrowerInSectorx_.getname() + "\" ");
+      out.print(" theta=\"" + borrowerInSectorx_.getTheta() + "\" ");
+      out.print(" omega=\"" + borrowerInSectorx_.getOmega() + "\" ");
+      out.println(" />");
+    }
+
+
+    /* Could be printing out statistics data of CDOs */
     for (int _i = 0; _i < statfuncs.size(); _i++)
     { StatFunc statfuncx_ = (StatFunc) statfuncs.get(_i);
        out.print("<statfuncs xsi:type=\"My:StatFunc\"");
@@ -762,6 +1183,16 @@ public class Controller implements SystemTypes, ControllerInterface
 
   /* Add a new sector to sector list */
   public void addSector(Sector oo) { sectors.add(oo); }
+
+  /* Add a new borrower to borrower list */
+  public void addBorrower(Borrower borrower) {
+    borrowers.add(borrower);
+  }
+
+  /* Add a new borrowerInSector to borrowerInSector list */
+  public void addBorrowerInSector(BorrowerInSector borrowerInSector) {
+    borrowerInSectors.add(borrowerInSector);
+  }
 
   /* Add a *(statistical function) to StatFunc list */
   public void addStatFunc(StatFunc oo) { statfuncs.add(oo); }

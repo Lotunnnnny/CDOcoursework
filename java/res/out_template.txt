@@ -1,0 +1,56 @@
+cdox_1 : CDO
+cdox_1.ps0 = 0.3145151317689791
+
+sectorx_1 : Sector
+sectorx_1.name = "Aerospace and Defense"
+sectorx_1.n = 3
+sectorx_1.p = 0.009
+sectorx_1.q = 0.05
+sectorx_1.L = 5
+sectorx_1.mu = 0.026757729000000063
+sectorx_1 : cdox_1.sectors
+sectorx_2 : Sector
+sectorx_2.name = "Automobile"
+sectorx_2.n = 3
+sectorx_2.p = 0.018
+sectorx_2.q = 0.05
+sectorx_2.L = 3
+sectorx_2.mu = 0.053033832
+sectorx_2 : cdox_1.sectors
+
+a1 : Borrower
+a1.name = "Company1"
+a1.L = 5
+a1.p = 0.02
+a1.risk_contribution = 0.5
+a2 : Borrower
+a2.name = "Company2"
+a2.L = 7
+a2.p = 0.01
+a2.risk_contribution = 0.3
+a3 : Borrower
+a3.name = "Company3"
+a3.L = 4
+a3.p = 0.03
+a3.risk_contribution = 0.2
+
+b1 : BorrowerInSector
+b1.borrower = a1
+b1.theta = 1
+b1.omega = 0.6
+b1 : s1.borrowers
+b2 : BorrowerInSector
+b2.borrower = a2
+b2.theta = 0.7
+b2.omega = 0.4
+b2 : s1.borrowers
+b3 : BorrowerInSector
+b3.borrower = a2
+b3.theta = 0.3
+b3.omega = 0.5
+b3 : s2.borrowers
+b4 : BorrowerInSector
+b4.borrower = a3
+b4.theta = 1
+b4.omega = 0.5
+b4 : s2.borrowers
