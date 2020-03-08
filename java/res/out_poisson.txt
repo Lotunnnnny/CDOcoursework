@@ -1,0 +1,63 @@
+cdox_0 : CDO
+cdox_0.ps0 = 0.0
+
+sectorx_0 : Sector
+sectorx_0.name = "Aerospace and Defense"
+sectorx_0.n = 2
+sectorx_0.p = 0.0
+sectorx_0.q = 0.0
+sectorx_0.L = 0
+sectorx_0.mu = 0.0
+sectorx_1 : Sector
+sectorx_1.name = "Automobile"
+sectorx_1.n = 2
+sectorx_1.p = 0.0
+sectorx_1.q = 0.0
+sectorx_1.L = 0
+sectorx_1.mu = 0.0
+
+borrowerx_0 : Borrower
+borrowerx_0.name = "Company1"
+borrowerx_0.L = 5.0
+borrowerx_0.p = 0.02
+borrowerx_0.risk_contribution = 0.0
+borrowerx_1 : Borrower
+borrowerx_1.name = "Company2"
+borrowerx_1.L = 7.0
+borrowerx_1.p = 0.01
+borrowerx_1.risk_contribution = 0.0
+borrowerx_2 : Borrower
+borrowerx_2.name = "Company3"
+borrowerx_2.L = 4.0
+borrowerx_2.p = 0.03
+borrowerx_2.risk_contribution = 0.0
+
+borrowerInSectorx_0 : BorrowerInSector
+borrowerInSectorx_0.theta = 1.0
+borrowerInSectorx_0.omega = 0.6
+borrowerInSectorx_0.borrower = Company1
+borrowerInSectorx_1 : BorrowerInSector
+borrowerInSectorx_1.theta = 0.7
+borrowerInSectorx_1.omega = 0.4
+borrowerInSectorx_1.borrower = Company2
+borrowerInSectorx_2 : BorrowerInSector
+borrowerInSectorx_2.theta = 0.3
+borrowerInSectorx_2.omega = 0.5
+borrowerInSectorx_2.borrower = Company2
+borrowerInSectorx_3 : BorrowerInSector
+borrowerInSectorx_3.theta = 1.0
+borrowerInSectorx_3.omega = 0.5
+borrowerInSectorx_3.borrower = Company3
+
+borrowerInSectorx_0 : borrowerx_0.borrowerInSectors
+borrowerInSectorx_1 : borrowerx_1.borrowerInSectors
+borrowerInSectorx_2 : borrowerx_1.borrowerInSectors
+borrowerInSectorx_3 : borrowerx_2.borrowerInSectors
+
+borrowerInSectorx_0 : sectorx_0.borrowerInSectors
+borrowerInSectorx_3 : sectorx_0.borrowerInSectors
+borrowerInSectorx_1 : sectorx_1.borrowerInSectors
+borrowerInSectorx_2 : sectorx_1.borrowerInSectors
+
+sectorx_0 : cdox_0.sectors
+sectorx_1 : cdox_0.sectors
