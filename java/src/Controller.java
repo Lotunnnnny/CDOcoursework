@@ -24,7 +24,7 @@ class CDO
 
     public CDO()
     {
-        this.ps0 = 0;                         //rate of default
+        this.ps0 = 0;                         //probability of ZERO default
 
     }
 
@@ -52,27 +52,27 @@ class CDO
     public void removesectors(Sector sectorsxx) { Vector _removedsectorssectorsxx = new Vector();
         _removedsectorssectorsxx.add(sectorsxx);
         sectors.removeAll(_removedsectorssectorsxx);
-    }                                                                                      //
+    }                                                                                      //remove sector
 
     public static void setAllsectors(List cdos,List _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-        Controller.inst().setsectors(cdox, _val); } }
+        Controller.inst().setsectors(cdox, _val); } }                                      //set all sectors
 
     public static void setAllsectors(List cdos,int _ind,Sector _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-        Controller.inst().setsectors(cdox,_ind,_val); } }
+        Controller.inst().setsectors(cdox,_ind,_val); } }                                   //set all sectors
 
     public static void addAllsectors(List cdos,Sector _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-        Controller.inst().addsectors(cdox, _val); } }
+        Controller.inst().addsectors(cdox, _val); } }                                       //set all sectors
 
     public static void removeAllsectors(List cdos,Sector _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
     { CDO cdox = (CDO) cdos.get(_i);
-        Controller.inst().removesectors(cdox, _val); } }
+        Controller.inst().removesectors(cdox, _val); } }                                    //remove all sectors
 
     public static void unionAllsectors(List cdos, List _val)
     { for (int _i = 0; _i < cdos.size(); _i++)
@@ -84,7 +84,7 @@ class CDO
     { CDO cdox = (CDO) cdos.get(_i);
         Controller.inst().subtractsectors(cdox, _val); } }
 
-    public double getps0() { return ps0; }
+    public double getps0() { return ps0; }                                                      // get value ps
 
     public static List getAllps0(List cdos)
     { List result = new Vector();
@@ -92,7 +92,7 @@ class CDO
         { CDO cdox = (CDO) cdos.get(i);
             if (result.contains(new Double(cdox.getps0()))) { }
             else { result.add(new Double(cdox.getps0())); } }
-        return result; }
+        return result; }                                                            // get valve ps from a list of cdos
 
     public static List getAllOrderedps0(List cdos)
     { List result = new Vector();
@@ -192,7 +192,7 @@ class CDO
       PS_cache.put(new Integer(s), new Double(result));
     }
     return result;
-   }
+   }                                          //9.5.1 Probability when loss = s of all sectors
 
 
     public double VS(int k,int s)
@@ -200,7 +200,7 @@ class CDO
 
     result = Set.sumdouble(Set.collect_2(Set.integerSubrange(1,this.maxfails(k,s)),this,k,s));
       return result;
-    }
+    }                                         //9.5.1 Probability when loss = s of a certain sector
 
     // Todo: test
     public double PS(double s)
@@ -235,7 +235,7 @@ class CDO
     }
 
     // Todo: test
-    public void computeExpectedLoss() {
+    public double expectedLoss() {
       double result = 0;
       for (int k = 1; k <= sectors.size(); k++) {
         Sector sector = (Sector) sectors.get(k-1);
@@ -245,11 +245,11 @@ class CDO
         }
         result += sector.getL()*sum;
       }
-      expectedLoss = result;
+      return result;
     }
 
-    // Todo: test
-    public void computeVarianceOfLoss() {
+  // Todo: test
+  public double varianceOfLoss() {
     double result = 0;
     for (int k = 1; k <= sectors.size(); k++) {
       Sector sector = (Sector) sectors.get(k-1);
@@ -257,50 +257,46 @@ class CDO
         result += Math.pow(m,2)*Math.pow(sector.getL(),2)*P(k,m);
       }
     }
-    variance = result;
+    return result;
   }
 
-   // Todo: test
-    public void computeSigmaOfLoss(){
-      sigma = Math.sqrt(variance);
+  // Todo: test
+  public double sigmaOfLoss(){
+      return Math.sqrt(varianceOfLoss());
   }
 
-    // Todo: test
-    public double riskContribution(int k) {
+  // Todo: test
+  public double riskContribution(int k) {
       Sector sector = (Sector) sectors.get(k-1);
       double result = 0;
       for (int m = 1; m <= sector.getn(); m++) {
         result += Math.pow(sector.getL(),2)*Math.pow(m,2)*P(k,m);
       }
-      return result/sigma;
+      return result/sigmaOfLoss();
   }
 
-    // Todo: test
-    public double borrowerRiskContribution(int a) {
+  // Todo: test
+  public double borrowerRiskContribution(Borrower borrower) {
+    List thisBorrowerInSectors = borrower.getBorrowerInSectors();
+    List sectorsOfBorrower = borrower.getSectors();
+
     double result = 0;
-
-    for (int k = 1; k <= sectors.size(); k++) {
-      Sector sector = (Sector) sectors.get(k-1);
-      BorrowerInSector ka = getBorrowerInSector(k,a);
-      if (ka == null) continue;
-      double collectA = ka.collect1();
-      double collectJs = 0;
-      double collectInnerSum = 0;
-      for (int j = 1; j <= borrowers.size(); j++) {
-        if (a == j) continue;
-        BorrowerInSector kj = getBorrowerInSector(k,j);
-        if (kj == null) continue;
-        collectJs += kj.collect1();
-      }
-      collectInnerSum = ka.collect2()+collectA*collectJs;
-      double innerProductSum = 0;
-      for (int m = 1; m <= sector.getn(); m++) {
-        innerProductSum += Math.pow(m,2)*P(k,m);
-      }
-      result += collectInnerSum*innerProductSum;
+    for (int k = 1; k <= sectorsOfBorrower.size(); k++) {
+        Sector sector = (Sector) sectorsOfBorrower.get(k);
+        List allBorrowerInSector = sector.getBorrowerInSectors();
+        BorrowerInSector borrowerInSector = borrower.getBorrowerInSectorFrom(sector);
+        double inner = 0;
+        for (Object borrowerInSectorJ: allBorrowerInSector){
+            if (borrowerInSectorJ.equals(borrower)) continue;
+            inner += ((BorrowerInSector) borrowerInSectorJ).collect1();
+        }
+        inner += (borrowerInSector.collect2() + borrowerInSector.collect1()*inner);
+        double mProduct = 0;
+        for (int m = 1; m < sector.getn(); m++) {
+            mProduct = Math.pow(m,2);// Todo: complete with index k in all sectors but not sectorsOfBorrowers
+        }
     }
-
-    return result/sigma;
+    return result;
   }
 
     public BorrowerInSector getBorrowerInSector(int k, int a) {
@@ -396,7 +392,7 @@ class Sector
   private void calculatePfromBorrowers() {
     for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
       BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
-      L+=borrowerInSector.getp()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
+      L+=borrowerInSector.getP()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
     }
   }
 
@@ -654,7 +650,7 @@ class Borrower
     return L;
   }
 
-  public double getp() {
+  public double getP() {
     return p;
   }
 
@@ -754,7 +750,7 @@ class BorrowerInSector extends Borrower
   { String _res_ = "(BorrowerInSector) ";
     _res_ = _res_ + getname() + ",";
     _res_ = _res_ + getL() + ",";
-    _res_ = _res_ + getp() + ",";
+    _res_ = _res_ + getP() + ",";
     _res_ = _res_ + omega + ",";
     _res_ = _res_ + theta + ",";
     return _res_;
@@ -833,7 +829,7 @@ public class Controller implements SystemTypes, ControllerInterface
       Borrower borrower = ((BorrowerInSector) borrowerInSector).getBorrower();
       ((BorrowerInSector) borrowerInSector).setname(borrower.getname());
       ((BorrowerInSector) borrowerInSector).setL(borrower.getL());
-      ((BorrowerInSector) borrowerInSector).setp(borrower.getp());
+      ((BorrowerInSector) borrowerInSector).setp(borrower.getP());
     }
   }
 
@@ -1051,7 +1047,7 @@ public class Controller implements SystemTypes, ControllerInterface
       out.println("borrowerx_" + _i + " : Borrower");
       out.println("borrowerx_" + _i + ".name = \"" + borrowerx_.getname() + "\"");
       out.println("borrowerx_" + _i + ".L = " + borrowerx_.getL());
-      out.println("borrowerx_" + _i + ".p = " + borrowerx_.getp());
+      out.println("borrowerx_" + _i + ".p = " + borrowerx_.getP());
       out.println("borrowerx_" + _i + ".risk_contribution = " + borrowerx_.getrc());
     }
 
@@ -1474,10 +1470,6 @@ public class Controller implements SystemTypes, ControllerInterface
    Date d2 = new Date();
    long t2 = d2.getTime(); 
    System.out.println("Time = " + (t2-t1)); 
-
-  }
-
-  public void computeRC() {
 
   }
 
