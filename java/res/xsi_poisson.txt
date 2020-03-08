@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<My:model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI">
+<cdos xsi:type="My:CDO" ps0="0.0"  sectors = " //@sectors.0 //@sectors.1" />
+<sectors xsi:type="My:Sector" name="Aerospace and Defense"  n="2"  p="0.0"  q="0.0"  L="0"  mu="0.0"  borrowerInSectors = " //@borrowerInSectors.0 //@borrowerInSectors.3" />
+<sectors xsi:type="My:Sector" name="Automobile"  n="2"  p="0.0"  q="0.0"  L="0"  mu="0.0"  borrowerInSectors = " //@borrowerInSectors.1 //@borrowerInSectors.2" />
+<borrowers xsi:type="My:Borrower" name="Company1"  L="5.0"  p="0.02"  rc="0.0"  //@borrowerInSectors.0" />
+<borrowers xsi:type="My:Borrower" name="Company2"  L="7.0"  p="0.01"  rc="0.0"  //@borrowerInSectors.1 //@borrowerInSectors.2" />
+<borrowers xsi:type="My:Borrower" name="Company3"  L="4.0"  p="0.03"  rc="0.0"  //@borrowerInSectors.3" />
+<borrowerInSectors xsi:type="My:BorrowerInSector" name="Company1"  theta="1.0"  omega="0.6"  />
+<borrowerInSectors xsi:type="My:BorrowerInSector" name="Company2"  theta="0.7"  omega="0.4"  />
+<borrowerInSectors xsi:type="My:BorrowerInSector" name="Company2"  theta="0.3"  omega="0.5"  />
+<borrowerInSectors xsi:type="My:BorrowerInSector" name="Company3"  theta="1.0"  omega="0.5"  />
+</My:model>
