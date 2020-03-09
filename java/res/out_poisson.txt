@@ -1,5 +1,5 @@
 cdox_0 : CDO
-cdox_0.ps0 = 0.0
+cdox_0.ps0 = 1.0
 
 sectorx_0 : Sector
 sectorx_0.name = "Aerospace and Defense"

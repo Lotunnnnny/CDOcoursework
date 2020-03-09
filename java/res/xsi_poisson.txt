@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <My:model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI">
-<cdos xsi:type="My:CDO" ps0="0.0"  sectors = " //@sectors.0 //@sectors.1" />
+<cdos xsi:type="My:CDO" ps0="1.0"  sectors = " //@sectors.0 //@sectors.1" />
 <sectors xsi:type="My:Sector" name="Aerospace and Defense"  n="2"  p="0.0"  q="0.0"  L="0"  mu="0.0"  borrowerInSectors = " //@borrowerInSectors.0 //@borrowerInSectors.3" />
 <sectors xsi:type="My:Sector" name="Automobile"  n="2"  p="0.0"  q="0.0"  L="0"  mu="0.0"  borrowerInSectors = " //@borrowerInSectors.1 //@borrowerInSectors.2" />
 <borrowers xsi:type="My:Borrower" name="Company1"  L="5.0"  p="0.02"  rc="0.0"  //@borrowerInSectors.0" />
