@@ -48,7 +48,13 @@ class CDO
 
     public void addsectors(Sector sectorsxx) {
         sectors.add(sectorsxx);
-        calculateSigma();                                             //add new sector
+                                                              //add new sector
+    }
+
+    public void add(Sector sectorIn) {
+        sectors.add(sectorIn);
+
+        calculateSigma();
     }
 
 
@@ -107,6 +113,8 @@ class CDO
         return result; }
 
     public List getsectors() { return (Vector) ((Vector) sectors).clone(); }
+
+
 
     public static List getAllsectors(List cdos)
     { List result = new Vector();
@@ -256,12 +264,10 @@ class CDO
     // Todo: test
     public void calculateSigma() {
         double result = 0;
-
         for (int k = 1; k <= sectors.size(); k++) {
-            Sector sector = (Sector) sectors.get(k-1);
-
-            for (int m = 1; m <= sector.getn(); m++) {
-                result += m * m * sector.getL() * sector.getL() * P(k,m) ;
+            Sector s = (Sector) sectors.get(k-1);
+            for (int m = 1; m <= s.getn(); m++) {
+              result += m * m * s.getL() * s.getL() * P(k,m) ;
             }
 
         }
@@ -415,6 +421,7 @@ class Sector
         borrowerInSectors.add(borrowerInSector);
         this.L += borrowerInSector.getL();
         this.p += borrowerInSector.getP();
+        n++;
         calculateMu();
     }
 

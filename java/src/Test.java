@@ -11,7 +11,7 @@ public class Test {
         BorrowerInSector aIni = new BorrowerInSector(0.5,1,a,i);
         BorrowerInSector bIni = new BorrowerInSector(0.5,0.7,b,i);
         BorrowerInSector bInj = new BorrowerInSector(0.4,0.3,b,j);
-        BorrowerInSector cInj = new BorrowerInSector(0.5,1,c,j);
+        BorrowerInSector cInj = new BorrowerInSector(0.6,1,c,j);
 
         CDO cdo_1 = new CDO();
 
@@ -20,18 +20,13 @@ public class Test {
         j.add(bInj);
         j.add(cInj);
 
-        cdo_1.addsectors(i);
-        cdo_1.addsectors(j);
+        cdo_1.add(i);
+        cdo_1.add(j);
 
 
+        
+        System.out.println(cdo_1.getSigma());
 
-      //  System.out.println(cdo_1.getSigma());
-        System.out.println(aIni.getP());
-        System.out.println(bIni.getP());
-        System.out.println(bInj.getP());
-        System.out.println(cInj.getP());
-        System.out.println(i.getP());
-        System.out.println(j.getP());
 
 
 
