@@ -24,9 +24,12 @@ public class Test {
         cdo_1.add(j);
 
 
-        
-        System.out.println(cdo_1.getSigma());
 
+        System.out.println(cdo_1.getSigma());
+        System.out.println(cdo_1.riskContribution(1,1));
+        System.out.println(cdo_1.riskContribution(1,2));
+        System.out.println(cdo_1.riskContribution(2,1));
+        System.out.println(cdo_1.riskContribution(2,2));
 
 
 
