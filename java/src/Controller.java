@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 import java.io.*;
 
 class CDO
-        implements SystemTypes
+  implements SystemTypes
 {
     private double ps0 = 0; // internal
     private static List sectors = new Vector(); // of Sector
@@ -819,11 +819,6 @@ public class Controller implements SystemTypes, ControllerInterface
     { if (uniqueInstance == null) 
     { uniqueInstance = new Controller(); }
     return uniqueInstance; }
-
-  // Todo: complete
-  public static void computeLPinSector() {
-
-  }
 
   // Todo: test
   public static void linkBorrowerWithSector() {
