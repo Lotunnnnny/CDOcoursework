@@ -1,24 +1,21 @@
 c : CDO
 
 s1 : Sector
-s1.name = "Aerospace and Defense"
-s1.n = 2
 s1 : c.sectors
-s2 : Sector 
-s2.name = "Automobile"
-s2.n = 2
+s1.n = 2
+s1.q = 0.03
+s2 : Sector
 s2 : c.sectors
+s2.n = 2
+s2.q = 0.05
 
 a1 : Borrower
-a1.name = "Company1"
 a1.L = 5
 a1.p = 0.02
 a2 : Borrower
-a2.name = "Company2"
 a2.L = 7
 a2.p = 0.01
 a3 : Borrower
-a3.name = "Company3"
 a3.L = 4
 a3.p = 0.03
 
@@ -32,7 +29,7 @@ b2 : BorrowerInSector
 b2.borrower = a2
 b2.theta = 0.7
 b2.omega = 0.4
-b2 : s2.borrowerInSectors
+b2 : s1.borrowerInSectors
 b2 : a2.borrowerInSectors
 b3 : BorrowerInSector
 b3.borrower = a2
@@ -44,5 +41,5 @@ b4 : BorrowerInSector
 b4.borrower = a3
 b4.theta = 1
 b4.omega = 0.5
-b4 : s1.borrowerInSectors
+b4 : s2.borrowerInSectors
 b4 : a3.borrowerInSectors

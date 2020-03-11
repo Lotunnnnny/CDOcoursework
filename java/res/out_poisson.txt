@@ -1,53 +1,46 @@
 cdox_0 : CDO
-cdox_0.ps0 = 0.0
+cdox_0.ps0 = 0.9397807176759687
 
 sectorx_0 : Sector
-sectorx_0.name = "Aerospace and Defense"
+sectorx_0.name = ""
 sectorx_0.n = 2
-sectorx_0.p = 0.027
-sectorx_0.q = 0.0
-sectorx_0.L = 5
-sectorx_0.mu = 0.05327100000000007
+sectorx_0.p = 0.0148
+sectorx_0.q = 0.03
+sectorx_0.L = 4.96
+sectorx_0.mu = 0.029380960000000123
 sectorx_1 : Sector
-sectorx_1.name = "Automobile"
+sectorx_1.name = ""
 sectorx_1.n = 2
-sectorx_1.p = 0.0043
-sectorx_1.q = 0.0
-sectorx_1.L = 2
-sectorx_1.mu = 0.008581509999999959
+sectorx_1.p = 0.0165
+sectorx_1.q = 0.05
+sectorx_1.L = 3.05
+sectorx_1.mu = 0.032727749999999944
 
 borrowerx_0 : Borrower
-borrowerx_0.name = "Company1"
+borrowerx_0.name = ""
 borrowerx_0.L = 5.0
 borrowerx_0.p = 0.02
-borrowerx_0.risk_contribution = 0.0
 borrowerx_1 : Borrower
-borrowerx_1.name = "Company2"
+borrowerx_1.name = ""
 borrowerx_1.L = 7.0
 borrowerx_1.p = 0.01
-borrowerx_1.risk_contribution = 0.0
 borrowerx_2 : Borrower
-borrowerx_2.name = "Company3"
+borrowerx_2.name = ""
 borrowerx_2.L = 4.0
 borrowerx_2.p = 0.03
-borrowerx_2.risk_contribution = 0.0
 
 borrowerInSectorx_0 : BorrowerInSector
 borrowerInSectorx_0.theta = 1.0
 borrowerInSectorx_0.omega = 0.6
-borrowerInSectorx_0.borrower = Company1
 borrowerInSectorx_1 : BorrowerInSector
 borrowerInSectorx_1.theta = 0.7
 borrowerInSectorx_1.omega = 0.4
-borrowerInSectorx_1.borrower = Company2
 borrowerInSectorx_2 : BorrowerInSector
 borrowerInSectorx_2.theta = 0.3
 borrowerInSectorx_2.omega = 0.5
-borrowerInSectorx_2.borrower = Company2
 borrowerInSectorx_3 : BorrowerInSector
 borrowerInSectorx_3.theta = 1.0
 borrowerInSectorx_3.omega = 0.5
-borrowerInSectorx_3.borrower = Company3
 
 borrowerInSectorx_0 : borrowerx_0.borrowerInSectors
 borrowerInSectorx_1 : borrowerx_1.borrowerInSectors
@@ -55,9 +48,69 @@ borrowerInSectorx_2 : borrowerx_1.borrowerInSectors
 borrowerInSectorx_3 : borrowerx_2.borrowerInSectors
 
 borrowerInSectorx_0 : sectorx_0.borrowerInSectors
-borrowerInSectorx_3 : sectorx_0.borrowerInSectors
-borrowerInSectorx_1 : sectorx_1.borrowerInSectors
+borrowerInSectorx_1 : sectorx_0.borrowerInSectors
 borrowerInSectorx_2 : sectorx_1.borrowerInSectors
+borrowerInSectorx_3 : sectorx_1.borrowerInSectors
 
 sectorx_0 : cdox_0.sectors
 sectorx_1 : cdox_0.sectors
+
+cdox_0:
+Probability of loss 0.0 = 0.9397807176759687
+Probability of loss 2.0 = 0.0
+Probability of loss 3.0 = 0.0
+Probability of loss 4.0 = 0.0
+Probability of loss 5.0 = 0.0
+Probability of loss 6.0 = 0.0
+Probability of loss 7.0 = 0.0
+Probability of loss 8.0 = 0.0
+Probability of loss 9.0 = 0.0
+Probability of loss 10.0 = 0.0
+Probability of loss 11.0 = 0.0
+Probability of loss 12.0 = 0.0
+Probability of loss 13.0 = 0.0
+Probability of loss 14.0 = 0.0
+Probability of loss 15.0 = 0.0
+Probability of loss 16.0 = 0.0
+Probability of loss 17.0 = 0.0
+Probability of loss 18.0 = 0.0
+Probability of loss 19.0 = 0.0
+Probability of loss 20.0 = 0.0
+Probability of loss 21.0 = 0.0
+Probability of loss 22.0 = 0.0
+Probability of loss 23.0 = 0.0
+Probability of loss 24.0 = 0.0
+Probability of loss 25.0 = 0.0
+Probability of loss 26.0 = 0.0
+Probability of loss 27.0 = 0.0
+Probability of loss 28.0 = 0.0
+Probability of loss 29.0 = 0.0
+Probability of loss 30.0 = 0.0
+Probability of loss 31.0 = 0.0
+Probability of loss 32.0 = 0.0
+Probability of loss 33.0 = 0.0
+Probability of loss 34.0 = 0.0
+Probability of loss 35.0 = 0.0
+Probability of loss 36.0 = 0.0
+Probability of loss 37.0 = 1.2260487108823578E-15
+Probability of loss 38.0 = 0.0
+Probability of loss 39.0 = 0.0
+Probability of loss 40.0 = 0.0
+Probability of loss 41.0 = 0.0
+Probability of loss 42.0 = 0.0
+Probability of loss 43.0 = 0.0
+Probability of loss 44.0 = 0.0
+Probability of loss 45.0 = 0.0
+Probability of loss 46.0 = 0.0
+Probability of loss 47.0 = 0.0
+Probability of loss 48.0 = 0.0
+Probability of loss 49.0 = 0.0
+Probability of loss 50.0 = 0.0
+Probability of loss 1.0 = 0.0
+sectorx_0 risk contribution = 0.7457950428302662
+borrowerInSectorx_0 risk contribution = 0.45108571138927384
+borrowerInSectorx_1 risk contribution = 0.42101333062998897
+sectorx_1 risk contribution = 0.3316504656234005
+borrowerInSectorx_2 risk contribution = 0.38058250153504986
+borrowerInSectorx_3 risk contribution = 0.2174757151628856
+
