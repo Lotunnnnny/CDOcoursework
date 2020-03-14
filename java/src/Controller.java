@@ -10,20 +10,16 @@ class CDO
     private double ps0 = 0; // internal
     private static List sectors = new Vector(); // of Sector
 
-    private static List borrowers = new Vector(); // all borrowers
-    private static List borrowerInSectors = new Vector(); // all relationship between borrowers and sectors
-
     private double sigma = 0;
     private double variance = 0;
     private double expectedLoss = 0;
 
-    private  Map PS_cache = new HashMap();
-    private  Map PS_result = new HashMap();
+    private Map PS_cache = new HashMap();
+    private Map PS_result = new HashMap();
 
     public CDO()
     {
         this.ps0 = 0;                         //probability of ZERO default
-
     }
 
     /* Description of CDO */
@@ -134,14 +130,12 @@ class CDO
         return result;
     }                                                                // Davis and Lo distribution, m is number of default, k is the sector ID
 
-
     public double P(int k,int m)
     {   double result = 0;
 
       result = StatFunc.comb(((Sector) sectors.get(k - 1)).getn(),m) * ( ((Sector) sectors.get(k - 1)).nocontagion(m) + Set.sumdouble(Set.collect_0(Set.integerSubrange(1,m - 1),this,k,m)) );
       return result;
     }
-
 
     public double PCond(int k,int m)
     {   double result = 0;
@@ -155,17 +149,18 @@ class CDO
     }    return result;
     }
 
-    // Todo: test
     public int maxfails(int k, double s)
     {   int result = 0;
 
-      if (((Sector) sectors.get(k - 1)).getn() <= (int)Math.floor(s / ((Sector) sectors.get(k - 1)).getL()))
+      int num =  (int)Math.floor(s / ((Sector) sectors.get(k - 1)).getL());
+      if (((Sector) sectors.get(k - 1)).getn() <= num)
       {   result = ((Sector) sectors.get(k - 1)).getn();
 
-      }  else   if (((Sector) sectors.get(k - 1)).getn() > ( s / ((Sector) sectors.get(k - 1)).getL() ))
-      {   result = (int)Math.floor(s / ((Sector) sectors.get(k - 1)).getL());
+      }  else   if (((Sector) sectors.get(k - 1)).getn() > num)
+      {   result = num;
 
-      }    return result;
+      }
+      return result;
     }
 
     public double PS(int s)
@@ -199,7 +194,6 @@ class CDO
       return result;
     }                                         //9.5.1 Probability when loss = s of a certain sector
 
-    // Todo: test
     public double PS(double s)
     {   double result = 0;
       Object cached_result = PS_cache.get(s);
@@ -223,7 +217,6 @@ class CDO
       return result;
     }
 
-    // Todo: test
     public double VS(int k, double s)
     {
         double result = 0;
@@ -238,7 +231,6 @@ class CDO
         calculateSigma();
     }
 
-    // Todo: test
     private void calculateExpectedLoss() {
         double result = 0;
         for (int k = 1; k <= sectors.size(); k++) {
@@ -268,12 +260,12 @@ class CDO
     }
 
     public void riskContribution(int k) {
-        Sector sector = (Sector) sectors.get(k-1);
+        Sector s = (Sector) sectors.get(k-1);
         double result = 0;
-        for (int m = 1; m <= sector.getn(); m++) {
-            result += Math.pow(sector.getL(),2)*Math.pow(m,2)*P(k,m);
+        for (int m = 1; m <= s.getn(); m++) {
+            result += m * m * s.getL() * s.getL() * P(k,m);
         }
-        sector.setRC(result/sigma);
+        s.setRC(result/sigma);
     }
 
     public void borrowerRiskContribution(int k, int i) {
@@ -283,7 +275,7 @@ class CDO
         for (int m = 1; m <= sector.getn(); m++) {
             result += sector.getL()*Math.pow(m,2)*P(k,m);
         }
-        bis.setrc(result*bis.getL()/sigma/bis.getTheta());
+        bis.setrc(result/sigma*(bis.getL()/bis.getTheta()));
     }
 
     /*------------------------------------------------computation-----------------------------------------------------*/
@@ -305,21 +297,27 @@ class CDO
     }
     }
 
-
     public void test2()
     { Controller.inst().setps0(this,Math.exp(-Set.sumdouble(Sector.getAllOrderedmu(this.getsectors()))));
     }
 
+    public double getMaxLoss() {
+        double max = 0;
+        for (int _k = 1; _k <= sectors.size(); _k++) {
+            Sector s = (Sector)sectors.get(_k-1);
+            max += s.getn()*s.getL();
+        }
+        return max;
+    }
+
     public void test3()
-    {     List _integer_list2 = new Vector();
-      _integer_list2.addAll(Set.integerSubrange(0,50));
-      for (int _ind3 = 0; _ind3 < _integer_list2.size(); _ind3++)
-      {
-        double s = ((Integer) _integer_list2.get(_ind3)).intValue();
-          PS_result.put(s,this.PS(s));
-
-      }
-
+    {     List _double_list2 = new Vector();
+        _double_list2.addAll(Set.doubleSubrange(0,getMaxLoss(),0.01));
+        for (int _ind3 = 0; _ind3 < _double_list2.size(); _ind3++)
+        {
+            double s = (double) _double_list2.get(_ind3);
+            PS_result.put(s,this.PS(s));
+        }
     }
 
     public void test4() {
@@ -658,6 +656,10 @@ class Borrower
         borrowerInSectors.add(borrowerInSector);
     }
 
+    public boolean romoveborrowerInSectors(Borrower borrowerInSector) {
+        return borrowerInSectors.remove(borrowerInSector);
+    }
+
     public void setname(String name) {
     this.name = name;
     }
@@ -702,16 +704,6 @@ class Borrower
 
     /*-------------------------------------------------set/get/add----------------------------------------------------*/
 
-
-
-    /*-------------------------------------------------computation----------------------------------------------------*/
-
-    public boolean equals(Borrower borrower) {
-        return (name == borrower.name);
-    }
-
-    /*-------------------------------------------------computation----------------------------------------------------*/
-
 }
 
 class BorrowerInSector extends Borrower
@@ -734,9 +726,9 @@ class BorrowerInSector extends Borrower
     /* Description of BorrowerInSector */
     public String toString()
     { String _res_ = "(BorrowerInSector) ";
-        _res_ = _res_ + getname() + ",";
-        _res_ = _res_ + getL() + ",";
-        _res_ = _res_ + getP() + ",";
+        _res_ = _res_ + name + ",";
+        _res_ = _res_ + L + ",";
+        _res_ = _res_ + p + ",";
         _res_ = _res_ + omega + ",";
         _res_ = _res_ + theta + ",";
         return _res_;
@@ -745,6 +737,7 @@ class BorrowerInSector extends Borrower
 
 
     /*-------------------------------------------------set/get/add----------------------------------------------------*/
+
     public void setomega(double omega) {
     this.omega = omega;
     }
@@ -774,16 +767,19 @@ class BorrowerInSector extends Borrower
     /*-------------------------------------------------set/get/add----------------------------------------------------*/
 
 
+
     /*-------------------------------------------------computation----------------------------------------------------*/
 
     // omega*theta*L
-    public double collect1() {
-      return omega*theta*getL();
+    public void calculateL() {
+      L = omega*theta*borrower.getL();
+      System.out.println(omega + " " + theta + " " + borrower.getL());
+      System.out.println("L: " + L);
     }
 
-    // (omega*theta)^2*L^2
-    public double collect2() {
-      return Math.pow(collect1(),2);
+    // omega*theta*p
+    public void calculateP() {
+      p = omega*theta*borrower.getP();
     }
 
     /*-------------------------------------------------computation----------------------------------------------------*/
@@ -841,19 +837,17 @@ public class Controller
     { uniqueInstance = new Controller(); }
     return uniqueInstance; }
 
-    // Todo: test
     public static void linkBorrowerWithSector() {
     Vector borrowerInSectors = uniqueInstance.borrowerInSectors;
     for (Object borrowerInSector:borrowerInSectors) {
       BorrowerInSector borrowerInSector1 = (BorrowerInSector) borrowerInSector;
       Borrower borrower = borrowerInSector1.getBorrower();
       borrowerInSector1.setname(borrower.getname());
-      borrowerInSector1.setL(borrower.getL()*borrowerInSector1.getTheta()*borrowerInSector1.getOmega());
-      borrowerInSector1.setp(borrower.getP());
+      ((BorrowerInSector) borrowerInSector).calculateL();
+      ((BorrowerInSector) borrowerInSector).calculateP();
     }
     }
 
-    // Todo: print test
     public static void printTest() {
     for (Object cdo:uniqueInstance.cdos) {
       System.out.println(cdo.toString());
@@ -1121,8 +1115,8 @@ public class Controller
         CDO cdox_ = (CDO) cdos.get(_i);
         Map PS_result = cdox_.getPS_result();
         out.println("cdox_" + _i + ":");
-        for (Object entry : PS_result.entrySet()) {
-            out.println("Probability of loss " + ((Map.Entry)entry).getKey() + " = " + ((Map.Entry)entry).getValue());
+        for (Object entry: PS_result.entrySet()) {
+            out.println("Probability of loss " + ((Map.Entry) entry).getKey() + " = " + ((Map.Entry) entry).getValue());
         }
         for (Object sector: cdox_.getsectors()) {
             out.println("sectorx_" + sectors.indexOf(sector) + " risk contribution = " + ((Sector)sector).getRC());
@@ -1529,12 +1523,14 @@ public class Controller
         List cdotest3x = new Vector();
         cdotest3x.addAll(Controller.inst().cdos);
         for (int cdotest3x_ind6 = 0; cdotest3x_ind6 < cdotest3x.size(); cdotest3x_ind6++)
-        { Controller.inst().test3((CDO) cdotest3x.get(cdotest3x_ind6)); }  //compute ps0-50
+        { Controller.inst().test3((CDO) cdotest3x.get(cdotest3x_ind6)); }  //compute ps all
 
         List cdotest4x = new Vector();
         cdotest4x.addAll(Controller.inst().cdos);
         for (int i = 0; i < cdotest4x.size(); i++)
         { Controller.inst().test4((CDO) cdotest4x.get(i)); }  //compute rc & brc
+
+        printTest();
 
         Date d2 = new Date();
         long t2 = d2.getTime();

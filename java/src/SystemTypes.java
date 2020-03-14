@@ -416,6 +416,13 @@ public interface SystemTypes
     return tmp;
   }
 
+  public static List doubleSubrange(double i, double j, double accuracy)
+  { List tmp = new Vector();
+    for (double k = i; k <= j; k+=accuracy)
+    { tmp.add(k); }
+    return tmp;
+  }
+
   public static String subrange(String s, int i, int j)
   { return s.substring(i-1,j); }
 

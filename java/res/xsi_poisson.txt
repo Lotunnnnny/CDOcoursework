@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <My:model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI">
-<cdos xsi:type="My:CDO" ps0="0.9397807176759687"  sectors = " //@sectors.0 //@sectors.1" />
-<sectors xsi:type="My:Sector" name=""  n="2"  p="0.0148"  q="0.03"  L="4.96"  mu="0.029380960000000123"  borrowerInSectors = " //@borrowerInSectors.0 //@borrowerInSectors.1" />
-<sectors xsi:type="My:Sector" name=""  n="2"  p="0.0165"  q="0.05"  L="3.05"  mu="0.032727749999999944"  borrowerInSectors = " //@borrowerInSectors.2 //@borrowerInSectors.3" />
+<cdos xsi:type="My:CDO" ps0="0.9691900269065188"  sectors = " //@sectors.0 //@sectors.1" />
+<sectors xsi:type="My:Sector" name=""  n="2"  p="0.007984"  q="0.03"  L="4.96"  mu="0.015904255744000007"  borrowerInSectors = " //@borrowerInSectors.0 //@borrowerInSectors.1" />
+<sectors xsi:type="My:Sector" name=""  n="2"  p="0.007725"  q="0.05"  L="3.05"  mu="0.015390324374999986"  borrowerInSectors = " //@borrowerInSectors.2 //@borrowerInSectors.3" />
 <borrowers xsi:type="My:Borrower" name=""  L="5.0"  p="0.02"  //@borrowerInSectors.0" />
 <borrowers xsi:type="My:Borrower" name=""  L="7.0"  p="0.01"  //@borrowerInSectors.1 //@borrowerInSectors.2" />
 <borrowers xsi:type="My:Borrower" name=""  L="4.0"  p="0.03"  //@borrowerInSectors.3" />
