@@ -1,8 +1,4 @@
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.*;
 
 public interface SystemTypes
 {
@@ -417,6 +413,16 @@ public interface SystemTypes
   { List tmp = new Vector(); 
     for (int k = i; k <= j; k++)
     { tmp.add(new Integer(k)); } 
+    return tmp;
+  }
+
+  public static List doubleSubrange(double i, double j, double accuracy)
+  { List tmp = new Vector();
+    for (double k = i; k <= j; )
+    {
+        tmp.add(k);
+        k = Arith.add(k,accuracy);
+    }
     return tmp;
   }
 
