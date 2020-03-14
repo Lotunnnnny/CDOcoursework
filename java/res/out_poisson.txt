@@ -1,20 +1,20 @@
 cdox_0 : CDO
-cdox_0.ps0 = 0.9691900269065188
+cdox_0.ps0 = 0.9397807176759687
 
 sectorx_0 : Sector
 sectorx_0.name = ""
 sectorx_0.n = 2
-sectorx_0.p = 0.007984
+sectorx_0.p = 0.0148
 sectorx_0.q = 0.03
-sectorx_0.L = 4.96
-sectorx_0.mu = 0.015904255744000007
+sectorx_0.L = 5
+sectorx_0.mu = 0.02938096
 sectorx_1 : Sector
 sectorx_1.name = ""
 sectorx_1.n = 2
-sectorx_1.p = 0.007725
+sectorx_1.p = 0.0165
 sectorx_1.q = 0.05
-sectorx_1.L = 3.05
-sectorx_1.mu = 0.015390324374999986
+sectorx_1.L = 3
+sectorx_1.mu = 0.03272775
 
 borrowerx_0 : Borrower
 borrowerx_0.name = ""
@@ -56,12 +56,57 @@ sectorx_0 : cdox_0.sectors
 sectorx_1 : cdox_0.sectors
 
 cdox_0:
-Probability of loss 0.0 = 0.9691900269065188
-Probability of loss 3.05 = 0.014115396280781546
-sectorx_0 risk contribution = 0.5577490403217251
-borrowerInSectorx_0 risk contribution = 0.3373482098720111
-borrowerInSectorx_1 risk contribution = 0.31485832921387696
-sectorx_1 risk contribution = 0.21508589525479357
-borrowerInSectorx_2 risk contribution = 0.24681987980058284
-borrowerInSectorx_3 risk contribution = 0.14103993131461875
+Probability of loss 0.0 = 0.9397807176759687
+Probability of loss 3.0 = 0.028976000428405833
+Probability of loss 5.0 = 0.026583635803216803
+Probability of loss 6.0 = 0.0022276124809183675
+Probability of loss 8.0 = 8.196459322207392E-4
+Probability of loss 9.0 = 5.950128448480123E-5
+Probability of loss 10.0 = 0.0014040103539842484
+Probability of loss 11.0 = 6.301261325075642E-5
+Probability of loss 12.0 = 2.56933735624283E-6
+Probability of loss 13.0 = 4.328946514154907E-5
+Probability of loss 14.0 = 1.68311654710172E-6
+Probability of loss 15.0 = 3.268590627048779E-5
+Probability of loss 16.0 = 3.32800080811224E-6
+Probability of loss 17.0 = 7.267900612269E-8
+Probability of loss 18.0 = 1.00785258994726E-6
+Probability of loss 19.0 = 8.889352369201E-8
+Probability of loss 20.0 = 1.00036184401948E-6
+Probability of loss 21.0 = 7.737421329045E-8
+Probability of loss 22.0 = 3.83852975827E-9
+Probability of loss 23.0 = 3.084549486341E-8
+Probability of loss 24.0 = 2.06669430913E-9
+Probability of loss 25.0 = 2.001610493795E-8
+Probability of loss 26.0 = 2.36829935262E-9
+Probability of loss 27.0 = 8.921701558E-11
+Probability of loss 28.0 = 6.172362614E-10
+Probability of loss 29.0 = 6.325823959E-11
+Probability of loss 30.0 = 4.6018897618E-10
+Probability of loss 31.0 = 4.729145688E-11
+Probability of loss 32.0 = 2.73085037E-12
+Probability of loss 33.0 = 1.419085402E-11
+Probability of loss 34.0 = 1.26314443E-12
+Probability of loss 35.0 = 8.14327192E-12
+Probability of loss 36.0 = 1.08723604E-12
+Probability of loss 37.0 = 5.450624E-14
+Probability of loss 38.0 = 2.511397E-13
+Probability of loss 39.0 = 2.903982E-14
+Probability of loss 40.0 = 1.5512866E-13
+Probability of loss 41.0 = 1.919302E-14
+Probability of loss 42.0 = 1.25309E-15
+Probability of loss 43.0 = 4.78424E-15
+Probability of loss 44.0 = 5.1263E-16
+Probability of loss 45.0 = 2.47702E-15
+Probability of loss 46.0 = 3.6553E-16
+Probability of loss 47.0 = 2.211E-17
+Probability of loss 48.0 = 7.64E-17
+Probability of loss 49.0 = 9.76E-18
+Probability of loss 50.0 = 4.11E-17
+sectorx_0 risk contribution = 0.757418231652295
+borrowerInSectorx_0 risk contribution = 0.454450938991377
+borrowerInSectorx_1 risk contribution = 0.4241542097252852
+sectorx_1 risk contribution = 0.32067348290635067
+borrowerInSectorx_2 risk contribution = 0.3741190633907424
+borrowerInSectorx_3 risk contribution = 0.2137823219375671
 

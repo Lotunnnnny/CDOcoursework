@@ -418,8 +418,11 @@ public interface SystemTypes
 
   public static List doubleSubrange(double i, double j, double accuracy)
   { List tmp = new Vector();
-    for (double k = i; k <= j; k+=accuracy)
-    { tmp.add(k); }
+    for (double k = i; k <= j; )
+    {
+        tmp.add(k);
+        k = Arith.add(k,accuracy);
+    }
     return tmp;
   }
 

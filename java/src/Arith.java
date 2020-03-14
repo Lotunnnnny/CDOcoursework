@@ -2,7 +2,7 @@ import java.math.BigDecimal;
 
 public class Arith{
 
-    private static final int DEF_DIV_SCALE = 10;
+    private static final int DEF_DIV_SCALE = 20;
 
     private Arith(){
     }
@@ -49,4 +49,12 @@ public class Arith{
         BigDecimal one = new BigDecimal("1");
         return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
-};
+
+    public static double pow(double v1, int v2) {
+        double result = v1;
+        for (int _i = 1; _i < v2; _i++) {
+            result = Arith.mul(result, v1);
+        }
+        return result;
+    }
+}

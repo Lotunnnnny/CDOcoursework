@@ -15,7 +15,7 @@ class CDO
     private double expectedLoss = 0;
 
     private Map PS_cache = new HashMap();
-    private Map PS_result = new HashMap();
+    private Map PS_result = new LinkedHashMap();
 
     public CDO()
     {
@@ -209,7 +209,7 @@ class CDO
       {   result = ps0;
 
       }  else   if (s > 0)
-      {   result = Set.sumdouble(Set.collect_1(Set.integerSubrange(1,sectors.size()),this,s)) / s;
+      {   result = Arith.div(Set.sumdouble(Set.collect_1(Set.integerSubrange(1,sectors.size()),this,s)), s);
 
       }
         PS_cache.put(s, new Double(result));
@@ -263,9 +263,9 @@ class CDO
         Sector s = (Sector) sectors.get(k-1);
         double result = 0;
         for (int m = 1; m <= s.getn(); m++) {
-            result += m * m * s.getL() * s.getL() * P(k,m);
+            result = Arith.add(Arith.mul(Arith.mul(Arith.pow(m,2), Arith.pow(s.getL(),2)), P(k,m)), result);
         }
-        s.setRC(result/sigma);
+        s.setRC(Arith.div(result,sigma));
     }
 
     public void borrowerRiskContribution(int k, int i) {
@@ -273,9 +273,9 @@ class CDO
         BorrowerInSector bis = (BorrowerInSector)sector.getBorrowerInSectors().get(i-1);
         double result = 0;
         for (int m = 1; m <= sector.getn(); m++) {
-            result += sector.getL()*Math.pow(m,2)*P(k,m);
+            result = Arith.add(Arith.mul(Arith.mul(sector.getL(), Arith.pow(m,2)), P(k,m)), result);
         }
-        bis.setrc(result/sigma*(bis.getL()/bis.getTheta()));
+        bis.setrc(Arith.mul(Arith.div(result,sigma), Arith.div(bis.getL(), bis.getTheta())));
     }
 
     /*------------------------------------------------computation-----------------------------------------------------*/
@@ -307,7 +307,7 @@ class CDO
             Sector s = (Sector)sectors.get(_k-1);
             max += s.getn()*s.getL();
         }
-        return max;
+        return 50;
     }
 
     public void test3()
@@ -593,7 +593,7 @@ class Sector
         p = 0;
         for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
             BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
-            p+=borrowerInSector.getP()*borrowerInSector.getOmega()*borrowerInSector.getTheta();
+            p = Arith.add(p,borrowerInSector.getP());
         }
     }
 
@@ -601,12 +601,13 @@ class Sector
         L = 0;
         for (int _borrowerInSectors=0; _borrowerInSectors<n; _borrowerInSectors++) {
             BorrowerInSector borrowerInSector = ((BorrowerInSector)borrowerInSectors.get(_borrowerInSectors));
-            L+=borrowerInSector.getL();
+            L = Arith.add(L,borrowerInSector.getL());
         }
     }
 
     private void calculateMufromBorrowers() {
-        mu = 1 - Math.pow(1-p, n);
+//        mu = 1 - Math.pow(1-p, n);
+        mu = Arith.sub(1, Arith.pow(1-p, n));
     }
 
     /*------------------------------------------------computation-----------------------------------------------------*/
@@ -643,7 +644,7 @@ class Borrower
     { String _res_ = "(Borrower) ";
         _res_ = _res_ + name + ",";
         _res_ = _res_ + L + ",";
-        _res_ = _res_ + p + ",";
+        _res_ = _res_ + p;
         return _res_;
     }
 
@@ -730,7 +731,7 @@ class BorrowerInSector extends Borrower
         _res_ = _res_ + L + ",";
         _res_ = _res_ + p + ",";
         _res_ = _res_ + omega + ",";
-        _res_ = _res_ + theta + ",";
+        _res_ = _res_ + theta;
         return _res_;
     }
 
@@ -772,14 +773,12 @@ class BorrowerInSector extends Borrower
 
     // omega*theta*L
     public void calculateL() {
-      L = omega*theta*borrower.getL();
-      System.out.println(omega + " " + theta + " " + borrower.getL());
-      System.out.println("L: " + L);
+      L = Arith.mul(Arith.mul(omega,theta),borrower.getL());
     }
 
     // omega*theta*p
     public void calculateP() {
-      p = omega*theta*borrower.getP();
+        p = Arith.mul(Arith.mul(omega,theta),borrower.getP());
     }
 
     /*-------------------------------------------------computation----------------------------------------------------*/
@@ -1116,7 +1115,8 @@ public class Controller
         Map PS_result = cdox_.getPS_result();
         out.println("cdox_" + _i + ":");
         for (Object entry: PS_result.entrySet()) {
-            out.println("Probability of loss " + ((Map.Entry) entry).getKey() + " = " + ((Map.Entry) entry).getValue());
+            if ((double)((Map.Entry) entry).getValue() != 0)
+                out.println("Probability of loss " + ((Map.Entry) entry).getKey() + " = " + ((Map.Entry) entry).getValue());
         }
         for (Object sector: cdox_.getsectors()) {
             out.println("sectorx_" + sectors.indexOf(sector) + " risk contribution = " + ((Sector)sector).getRC());
